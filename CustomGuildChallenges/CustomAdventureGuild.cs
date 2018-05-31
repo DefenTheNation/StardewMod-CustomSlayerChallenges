@@ -12,13 +12,19 @@ using System.Text;
 using System.Xml.Serialization;
 using xTile.Dimensions;
 
-namespace TestMod
+namespace CustomGuildChallenges
 {
-    [XmlInclude(typeof(CustomAdventureGuild))]
+    /// <summary>
+    ///     Custom implementation of the adventure guild
+    ///     Required in order to update the slayer list and rewards
+    /// </summary>
     public class CustomAdventureGuild : AdventureGuild
     {
         public const string MapPath = "Maps\\AdventureGuild";
         public const string MapName = "AdventureGuild";
+
+        public string GilNoRewardsText { get; set; } = "";
+        public string GilNappingText { get; set; } = "";
 
         protected bool talkedToGil;
         protected readonly NPC Gil = new NPC(null, new Vector2(-1000f, -1000f), "AdventureGuild", 2, "Gil", false, null, Game1.content.Load<Texture2D>("Portraits\\Gil"));
@@ -57,86 +63,9 @@ namespace TestMod
             addCharacter(new NPC(new AnimatedSprite("Characters\\Marlon", 0, 16, 32), new Vector2(320f, 704f), "AdventureGuild", 2, "Marlon", false, null, Game1.content.Load<Texture2D>("Portraits\\Marlon")));
         }
 
-        // TODO: Add localization
-        public static IList<ChallengeInfo> GetVanillaSlayerChallenges()
-        {
-            var slimeChallenge = new ChallengeInfo()
-            {
-                ChallengeName = "Slimes",
-                RequiredKillCount = 1000,
-                MonsterNames = { Monsters.GreenSlime, Monsters.FrostJelly, Monsters.Sludge },
-                RewardType = ItemType.Ring,
-                RewardItemNumber = (int) Rings.SlimeCharmerRing
-            };
-
-            var shadowChallenge = new ChallengeInfo()
-            {
-                ChallengeName = "Void Spirits",
-                RequiredKillCount = 150,
-                MonsterNames = { Monsters.ShadowGuy, Monsters.ShadowShaman, Monsters.ShadowBrute },
-                RewardType = ItemType.Ring,
-                RewardItemNumber = (int)Rings.SavageRing
-            };
-
-            var skeletonChallenge = new ChallengeInfo()
-            {
-                ChallengeName = "Skeletons",
-                RequiredKillCount = 50,
-                MonsterNames = { Monsters.Skeleton, Monsters.SkeletonMage, Monsters.SkeletonWarrior },
-                RewardType = ItemType.Hat,
-                RewardItemNumber = (int)Hats.SkeletonMask
-            };
-
-            var caveInsectsChallenge = new ChallengeInfo()
-            {
-                ChallengeName = "Cave Insects",
-                RequiredKillCount = 125,
-                MonsterNames = { Monsters.Bug, Monsters.Grub, Monsters.Fly },
-                RewardType = ItemType.MeleeWeapon,
-                RewardItemNumber = (int)MeleeWeapons.InsectHead
-            };
-
-            var duggyChallenge = new ChallengeInfo()
-            {
-                ChallengeName = "Duggies",
-                RequiredKillCount = 30,
-                MonsterNames = { Monsters.Duggy },
-                RewardType = ItemType.Hat,
-                RewardItemNumber = (int)Hats.HardHat
-            };
-
-            var batChallenge = new ChallengeInfo()
-            {
-                ChallengeName = "Bats",
-                RequiredKillCount = 100,
-                MonsterNames = { Monsters.Bat, Monsters.FrostBat, Monsters.LavaBat },
-                RewardType = ItemType.Ring,
-                RewardItemNumber = (int)Rings.VampireRing
-            };
-
-            var dustSpiritChallenge = new ChallengeInfo()
-            {
-                ChallengeName = "Dust Spirits",
-                RequiredKillCount = 500,
-                MonsterNames = { Monsters.DustSpirit },
-                RewardType = ItemType.Ring,
-                RewardItemNumber = (int)Rings.BurglarsRing
-            };
-
-            return new List<ChallengeInfo>()
-            {
-                slimeChallenge,
-                shadowChallenge,
-                skeletonChallenge,
-                caveInsectsChallenge,
-                duggyChallenge,
-                batChallenge,
-                dustSpiritChallenge
-            };
-        }
-
         #endregion
 
+        // Required to reset talkedToGil flag
         protected override void resetLocalState()
         {
             base.resetLocalState();
@@ -148,6 +77,7 @@ namespace TestMod
             }
         }
 
+        // Required to reimplement Monster Kill List and Gil's rewards
         public override bool checkAction(Location tileLocation, xTile.Dimensions.Rectangle viewport, Farmer who)
         {
             switch ((map.GetLayer("Buildings").Tiles[tileLocation] != null) ? map.GetLayer("Buildings").Tiles[tileLocation].TileIndex : (-1))
@@ -193,13 +123,16 @@ namespace TestMod
             Game1.drawLetterMessage(stringBuilder.ToString());
         }
 
+       /// <summary>
+       ///  Checks to see if there are any 
+       /// </summary>
         protected virtual void TalkToGil()
         {
             List<Item> rewards = new List<Item>();
 
             foreach(var challenge in ChallengeList)
             {
-                if (challenge.Collected) continue;
+                if (challenge.CollectedReward) continue;
 
                 int kills = 0;
                 foreach (var monsterName in challenge.Info.MonsterNames)
@@ -213,7 +146,9 @@ namespace TestMod
 
                     if (rewardItem == null)
                     {
-                        throw new Exception("BAD ITEM DATA!!!!");
+                        throw new Exception("Invalid reward parameters for challenge " + challenge.Info.ChallengeName + ":\n" +
+                            "Reward Type: " + challenge.Info.RewardType + "\n" +
+                            "Reward Item Number: " + challenge.Info.RewardItemNumber + "\n");
                     }
                     else if (rewardItem is StardewValley.Object)
                     {
@@ -225,7 +160,7 @@ namespace TestMod
                     }
 
                     rewards.Add(rewardItem);
-                    challenge.Collected = true;
+                    challenge.CollectedReward = true;
                 }
             }
 
@@ -235,16 +170,23 @@ namespace TestMod
             }
             else if(talkedToGil)
             {
-                Game1.drawDialogue(Gil, "I'm tryin to take a nap ya damn hippie");
+                Game1.drawDialogue(Gil, GilNappingText);
             }
             else
             {
-                Game1.drawDialogue(Gil, "I ain't got no freebies for a hippie like you");
+                Game1.drawDialogue(Gil, GilNoRewardsText);
                 talkedToGil = true;
             }
         }
 
-        // TODO: Localization
+        /// <summary>
+        ///     Generates a single challenge line for the challenge board
+        ///     Localization done in the config files
+        /// </summary>
+        /// <param name="challengeName"></param>
+        /// <param name="killCount"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
         protected virtual string KillListLine(string challengeName, int killCount, int target)
         {
             if (killCount == 0)
@@ -261,6 +203,12 @@ namespace TestMod
             }
         }
 
+        /// <summary>
+        ///     Creates the reward item using StardewValley.Objects.ObjectFactory
+        /// </summary>
+        /// <param name="rewardType"></param>
+        /// <param name="rewardItemNumber"></param>
+        /// <returns></returns>
         protected virtual Item CreateReward(ItemType rewardType, int rewardItemNumber)
         {
             switch(rewardType)
@@ -269,8 +217,6 @@ namespace TestMod
                     return new Hat(rewardItemNumber);
                 case ItemType.Ring:
                     return new Ring(rewardItemNumber);
-                case ItemType.MeleeWeapon:
-                    return new MeleeWeapon(rewardItemNumber);
                 default:
                     return ObjectFactory.getItemFromDescription((byte)rewardType, rewardItemNumber, 1);
             }

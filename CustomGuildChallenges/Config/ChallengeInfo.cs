@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TestMod
+namespace CustomGuildChallenges
 {
     public class ChallengeInfo
     {

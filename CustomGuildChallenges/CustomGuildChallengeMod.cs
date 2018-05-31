@@ -3,13 +3,16 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Locations;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace TestMod
+namespace CustomGuildChallenges
 {
+    /// Mod entry - handles all events and linking custom objects to game state
     public class CustomGuildChallengeMod : Mod
     {
+        protected IModHelper modHelper;
         protected AdventureGuild adventureGuild;
         protected CustomAdventureGuild customAdventureGuild;
 
@@ -19,6 +22,7 @@ namespace TestMod
         {
             Monitor.Log("Starting entry...");
 
+            modHelper = helper;
             Config = helper.ReadConfig<ModConfig>();
 
             // Create config file using vanilla challenges
@@ -27,7 +31,7 @@ namespace TestMod
                 Config = new ModConfig()
                 {
                     CustomChallengesEnabled = false,
-                    Challenges = CustomAdventureGuild.GetVanillaSlayerChallenges().ToList()
+                    Challenges = GetVanillaSlayerChallenges().ToList()
                 };
 
                 Monitor.Log("Config has " + Config.Challenges.Count + " challenges!");
@@ -37,7 +41,7 @@ namespace TestMod
             // Use vanilla challenges but do not overwrite the config
             else if(!Config.CustomChallengesEnabled)
             {
-                Config.Challenges = CustomAdventureGuild.GetVanillaSlayerChallenges().ToList();
+                Config.Challenges = GetVanillaSlayerChallenges().ToList();
             }
             
             Monitor.Log("Config created");
@@ -45,111 +49,22 @@ namespace TestMod
             adventureGuild = new AdventureGuild(CustomAdventureGuild.MapPath, CustomAdventureGuild.MapName);
             customAdventureGuild = new CustomAdventureGuild(Config.Challenges);
 
+            customAdventureGuild.GilNoRewardsText = Game1.content.LoadString("Characters\\Dialogue\\Gil:ComeBackLater");
+            customAdventureGuild.GilNappingText = Game1.content.LoadString("Characters\\Dialogue\\Gil:Snoring");
+
+            customAdventureGuild.GilNoRewardsText = "I ain't got any freebies anymore, ya damn hippie!";
+            customAdventureGuild.GilNappingText = "I'm tryin to get some sleep, ya damn hippie! *grumble*";
+
             Monitor.Log("Custom guild created");
-
-            void injectGuild(object sender, EventArgs e)
-            {
-                string saveDataPath = Path.Combine("saveData", Constants.SaveFolderName + ".json");
-                var saveData = helper.ReadJsonFile<SaveData>(saveDataPath) ?? new SaveData();
-
-                Monitor.Log("Read " + saveData.Challenges.Count + " challenges from save file");
-
-                foreach(var savedChallenge in saveData.Challenges)
-                {
-                    foreach(var slayerChallenge in customAdventureGuild.ChallengeList)
-                    {
-                        if(savedChallenge.ChallengeName == slayerChallenge.Info.ChallengeName)
-                        {
-                            slayerChallenge.Collected = savedChallenge.Collected;
-                            break;
-                        }
-                    }
-                }
-
-                // Kill old guild, replace with new guild
-                for(int i = 0; i < Game1.locations.Count; i++)
-                {
-                    if(Game1.locations[i].Name == CustomAdventureGuild.MapName)
-                    {
-                        Game1.locations.RemoveAt(i);
-                        Game1.locations.Add(customAdventureGuild);
-
-                        Monitor.Log("CUSTOM GUILD INJECTED!!");
-                    }
-                }
-            }
-
-            void presaveData(object sender, EventArgs e)
-            {
-                string saveDataPath = Path.Combine("saveData", Constants.SaveFolderName + ".json");
-                var saveData = new SaveData();
-               
-                foreach (var slayerChallenge in customAdventureGuild.ChallengeList)
-                {
-                    var save = new ChallengeSave()
-                    {
-                        ChallengeName = slayerChallenge.Info.ChallengeName,
-                        Collected = slayerChallenge.Collected
-                    };
-
-                    saveData.Challenges.Add(save);
-                }
-
-                helper.WriteJsonFile(saveDataPath, saveData);
-                Monitor.Log("Saved " + customAdventureGuild.ChallengeList.Count + " challenges.");
-
-                for (int i = 0; i < Game1.locations.Count; i++)
-                {
-                    if (Game1.locations[i].Name == CustomAdventureGuild.MapName)
-                    {
-                        Game1.locations.RemoveAt(i);
-                        Game1.locations.Add(adventureGuild);
-                    }
-                }
-            }
-
-            //void saveLocalData(object sender, EventArgs e)
-            //{
-
-                
-
-            //    // Kill old guild, replace with new guild
-            //    for (int i = 0; i < Game1.locations.Count; i++)
-            //    {
-            //        if (Game1.locations[i].Name == CustomAdventureGuild.MapName)
-            //        {
-            //            Game1.locations.RemoveAt(i);
-            //            Game1.locations.Add(customAdventureGuild);
-
-            //            Monitor.Log("CUSTOM GUILD INJECTED!!");
-            //        }
-            //    }
-
-            //    Monitor.Log("DATA SAVED!");
-            //}
 
             SaveEvents.BeforeSave += presaveData;
             SaveEvents.AfterLoad += injectGuild;
             SaveEvents.AfterCreate += injectGuild;
             SaveEvents.AfterSave += injectGuild;
 
-            helper.ConsoleCommands.Add("setkills", "", (command, arguments) =>
+            modHelper.ConsoleCommands.Add("player_setkills", "", (command, arguments) =>
             {
-                Monitor.Log(arguments[0]);
-                Monitor.Log(arguments[1]);
                 Game1.stats.specificMonstersKilled[arguments[0]] = int.Parse(arguments[1]);
-            });
-
-            helper.ConsoleCommands.Add("outputstrings", "", (command, arguments) =>
-            {
-                int killCount = 100;
-                int target = 200;
-
-                string monsterNamePlural = Game1.content.LoadString("Strings\\Locations:AdventureGuild_KillList_" + "Slimes");
-                Monitor.Log("Plural: " + monsterNamePlural);
-                Monitor.Log("'" + Game1.content.LoadString("Strings\\Locations:AdventureGuild_KillList_LineFormat_None", killCount, target, monsterNamePlural) + "^'");
-                Monitor.Log("'" + Game1.content.LoadString("Strings\\Locations:AdventureGuild_KillList_LineFormat_OverTarget", killCount, target, monsterNamePlural) + "^'");
-                Monitor.Log("'" + Game1.content.LoadString("Strings\\Locations:AdventureGuild_KillList_LineFormat", killCount, target, monsterNamePlural) + "^'");
             });
 
             string log = Config.CustomChallengesEnabled ?
@@ -159,16 +74,142 @@ namespace TestMod
             Monitor.Log(log, LogLevel.Info);
         }
 
-        
-
-        public override object GetApi()
+        void injectGuild(object sender, EventArgs e)
         {
-            return null;
+            string saveDataPath = Path.Combine("saveData", Constants.SaveFolderName + ".json");
+            var saveData = modHelper.ReadJsonFile<SaveData>(saveDataPath) ?? new SaveData();
+
+            Monitor.Log("Read " + saveData.Challenges.Count + " challenges from save file");
+
+            foreach (var savedChallenge in saveData.Challenges)
+            {
+                foreach (var slayerChallenge in customAdventureGuild.ChallengeList)
+                {
+                    if (savedChallenge.ChallengeName == slayerChallenge.Info.ChallengeName)
+                    {
+                        slayerChallenge.CollectedReward = savedChallenge.Collected;
+                        break;
+                    }
+                }
+            }
+
+            // Kill old guild, replace with new guild
+            for (int i = 0; i < Game1.locations.Count; i++)
+            {
+                if (Game1.locations[i].Name == CustomAdventureGuild.MapName)
+                {
+                    Game1.locations.RemoveAt(i);
+                    Game1.locations.Add(customAdventureGuild);
+
+                    Monitor.Log("CUSTOM GUILD INJECTED!!");
+                }
+            }
         }
 
-        protected override void Dispose(bool disposing)
+        void presaveData(object sender, EventArgs e)
         {
+            string saveDataPath = Path.Combine("saveData", Constants.SaveFolderName + ".json");
+            var saveData = new SaveData();
 
+            foreach (var slayerChallenge in customAdventureGuild.ChallengeList)
+            {
+                var save = new ChallengeSave()
+                {
+                    ChallengeName = slayerChallenge.Info.ChallengeName,
+                    Collected = slayerChallenge.CollectedReward
+                };
+
+                saveData.Challenges.Add(save);
+            }
+
+            modHelper.WriteJsonFile(saveDataPath, saveData);
+            Monitor.Log("Saved " + customAdventureGuild.ChallengeList.Count + " challenges.");
+
+            for (int i = 0; i < Game1.locations.Count; i++)
+            {
+                if (Game1.locations[i].Name == CustomAdventureGuild.MapName)
+                {
+                    Game1.locations.RemoveAt(i);
+                    Game1.locations.Add(adventureGuild);
+                }
+            }
+        }
+
+        public static IList<ChallengeInfo> GetVanillaSlayerChallenges()
+        {
+            var slimeChallenge = new ChallengeInfo()
+            {
+                ChallengeName = "Slimes",
+                RequiredKillCount = 1000,
+                MonsterNames = { Monsters.GreenSlime, Monsters.FrostJelly, Monsters.Sludge },
+                RewardType = ItemType.Ring,
+                RewardItemNumber = (int)Rings.SlimeCharmerRing
+            };
+
+            var shadowChallenge = new ChallengeInfo()
+            {
+                ChallengeName = "Void Spirits",
+                RequiredKillCount = 150,
+                MonsterNames = { Monsters.ShadowGuy, Monsters.ShadowShaman, Monsters.ShadowBrute },
+                RewardType = ItemType.Ring,
+                RewardItemNumber = (int)Rings.SavageRing
+            };
+
+            var skeletonChallenge = new ChallengeInfo()
+            {
+                ChallengeName = "Skeletons",
+                RequiredKillCount = 50,
+                MonsterNames = { Monsters.Skeleton, Monsters.SkeletonMage, Monsters.SkeletonWarrior },
+                RewardType = ItemType.Hat,
+                RewardItemNumber = (int)Hats.SkeletonMask
+            };
+
+            var caveInsectsChallenge = new ChallengeInfo()
+            {
+                ChallengeName = "Cave Insects",
+                RequiredKillCount = 125,
+                MonsterNames = { Monsters.Bug, Monsters.Grub, Monsters.Fly },
+                RewardType = ItemType.MeleeWeapon,
+                RewardItemNumber = (int)MeleeWeapons.InsectHead
+            };
+
+            var duggyChallenge = new ChallengeInfo()
+            {
+                ChallengeName = "Duggies",
+                RequiredKillCount = 30,
+                MonsterNames = { Monsters.Duggy },
+                RewardType = ItemType.Hat,
+                RewardItemNumber = (int)Hats.HardHat
+            };
+
+            var batChallenge = new ChallengeInfo()
+            {
+                ChallengeName = "Bats",
+                RequiredKillCount = 100,
+                MonsterNames = { Monsters.Bat, Monsters.FrostBat, Monsters.LavaBat },
+                RewardType = ItemType.Ring,
+                RewardItemNumber = (int)Rings.VampireRing
+            };
+
+            var dustSpiritChallenge = new ChallengeInfo()
+            {
+                ChallengeName = "Dust Spirits",
+                RequiredKillCount = 500,
+                MonsterNames = { Monsters.DustSpirit },
+                RewardType = ItemType.Ring,
+                RewardItemNumber = (int)Rings.BurglarsRing
+            };
+
+            return new List<ChallengeInfo>()
+            {
+                slimeChallenge,
+                shadowChallenge,
+                skeletonChallenge,
+                caveInsectsChallenge,
+                duggyChallenge,
+                batChallenge,
+                dustSpiritChallenge
+            };
         }
     }
 }

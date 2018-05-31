@@ -1,10 +1,11 @@
-﻿namespace TestMod
+﻿namespace CustomGuildChallenges
 {
     // Corresponds to ObjectFactory byte constants
     // Hat and Ring types added by this mod
     public enum ItemType
     {
         Regular = 0,                // Note: Stack count is hardcoded to 1
+        BigCraftable = 1,
         MeleeWeapon = 2,
         SpecialItem = 3,            // Note: does not created in object factory
         RegularObjectRecipe = 4,
@@ -13,6 +14,7 @@
         Ring = 7
     }
 
+    // Item Type 7
     public enum Rings
     {
         SlimeCharmerRing = 520,
@@ -24,6 +26,7 @@
         JukeboxRing = 528
     }
 
+    // Item Type 6
     public enum Hats
     {
         CowboyHat = 0,
@@ -68,6 +71,7 @@
         ConeHat = 39
     }
 
+    // Item Type 2
     public enum MeleeWeapons
     {
         RustySword = 0,

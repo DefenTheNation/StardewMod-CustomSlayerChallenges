@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace TestMod
+namespace CustomGuildChallenges
 {
+    // Global mod config
     public class ModConfig
     {
         public bool CustomChallengesEnabled { get; set; }

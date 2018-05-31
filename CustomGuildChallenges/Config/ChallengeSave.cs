@@ -1,4 +1,4 @@
-﻿namespace TestMod
+﻿namespace CustomGuildChallenges
 {
     public class ChallengeSave
     {

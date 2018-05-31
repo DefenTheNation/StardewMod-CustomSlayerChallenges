@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace TestMod
+namespace CustomGuildChallenges
 {
+    // Save data json file - different for each character
     public class SaveData
     {
         public List<ChallengeSave> Challenges { get; set; }

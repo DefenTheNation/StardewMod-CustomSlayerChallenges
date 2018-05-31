@@ -1,5 +1,8 @@
-﻿namespace TestMod
+﻿namespace CustomGuildChallenges
 {
+    /// <summary>
+    ///     Static monster names used in lookup of kill stats
+    /// </summary>
     public static class Monsters
     {
         public static string GreenSlime { get; set; } = "Green Slime";
