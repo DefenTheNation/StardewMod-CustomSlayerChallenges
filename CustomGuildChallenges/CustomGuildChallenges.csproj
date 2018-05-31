@@ -7,7 +7,7 @@
     <ProjectGuid>{8A1F40C0-25B7-4961-930B-C4F37147DC7C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TestMod</RootNamespace>
+    <RootNamespace>CustomGuildChallenges</RootNamespace>
     <AssemblyName>TestMod</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -42,10 +42,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Config\ChallengeInfo.cs" />
+    <Compile Include="Config\ChallengeSave.cs" />
+    <Compile Include="CustomGuildChallengeMod.cs" />
     <Compile Include="CustomAdventureGuild.cs" />
+    <Compile Include="Config\ModConfig.cs" />
+    <Compile Include="ItemCodes.cs" />
     <Compile Include="Monsters.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Config\SaveData.cs" />
     <Compile Include="SlayerChallenge.cs" />
   </ItemGroup>
   <ItemGroup>
