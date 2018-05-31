@@ -1,0 +1,8 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/packages/Pathoschild.Stardew.ModBuildConfig.2.1.0-beta-20180428
+/CustomGuildChallenges/bin
+/CustomGuildChallenges/obj
+/.vs/CustomGuildChallenges
