@@ -1,0 +1,78 @@
+﻿{
+  "CustomChallengesEnabled": false,
+  "Challenges": [
+    {
+      "ChallengeName": "Slimes",
+      "RequiredKillCount": 1000,
+      "RewardType": 8,
+      "RewardItemNumber": 520,
+      "MonsterNames": [
+        "Green Slime",
+        "Frost Jelly",
+        "Sludge"
+      ]
+    },
+    {
+      "ChallengeName": "Void Spirits",
+      "RequiredKillCount": 150,
+      "RewardType": 8,
+      "RewardItemNumber": 523,
+      "MonsterNames": [
+        "Shadow Guy",
+        "Shadow Shaman",
+        "Shadow Brute"
+      ]
+    },
+    {
+      "ChallengeName": "Skeletons",
+      "RequiredKillCount": 50,
+      "RewardType": 7,
+      "RewardItemNumber": 8,
+      "MonsterNames": [
+        "Skeleton",
+        "Skeleton Mage",
+        "Skeleton Warrior"
+      ]
+    },
+    {
+      "ChallengeName": "Cave Insects",
+      "RequiredKillCount": 125,
+      "RewardType": 2,
+      "RewardItemNumber": 13,
+      "MonsterNames": [
+        "Bug",
+        "Grub",
+        "Fly"
+      ]
+    },
+    {
+      "ChallengeName": "Duggies",
+      "RequiredKillCount": 30,
+      "RewardType": 7,
+      "RewardItemNumber": 27,
+      "MonsterNames": [
+        "Duggy"
+      ]
+    },
+    {
+      "ChallengeName": "Bats",
+      "RequiredKillCount": 100,
+      "RewardType": 8,
+      "RewardItemNumber": 522,
+      "MonsterNames": [
+        "Bat",
+        "FrostBat",
+        "Lava Bat"
+      ]
+    },
+    {
+      "ChallengeName": "Dust Spirits",
+      "RequiredKillCount": 500,
+      "RewardType": 8,
+      "RewardItemNumber": 526,
+      "MonsterNames": [
+        "Dust Spirit"
+      ]
+    }
+  ]
+}
