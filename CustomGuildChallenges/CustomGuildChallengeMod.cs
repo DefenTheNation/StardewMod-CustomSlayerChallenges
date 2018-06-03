@@ -1,4 +1,5 @@
-﻿using StardewModdingAPI;
+﻿using CustomGuildChallenges.API;
+using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Locations;
@@ -20,8 +21,6 @@ namespace CustomGuildChallenges
 
         public override void Entry(IModHelper helper)
         {
-            Monitor.Log("Starting entry...");
-
             modHelper = helper;
             Config = helper.ReadConfig<ModConfig>();
 
@@ -31,10 +30,10 @@ namespace CustomGuildChallenges
                 Config = new ModConfig()
                 {
                     CustomChallengesEnabled = false,
-                    Challenges = GetVanillaSlayerChallenges().ToList()
+                    Challenges = GetVanillaSlayerChallenges().ToList(),
+                    GilNoRewardDialogue = Game1.content.LoadString("Characters\\Dialogue\\Gil:ComeBackLater"),
+                    GilSleepingDialogue = Game1.content.LoadString("Characters\\Dialogue\\Gil:Snoring")
                 };
-
-                Monitor.Log("Config has " + Config.Challenges.Count + " challenges!");
 
                 helper.WriteConfig(Config);
             }
@@ -43,19 +42,12 @@ namespace CustomGuildChallenges
             {
                 Config.Challenges = GetVanillaSlayerChallenges().ToList();
             }
-            
-            Monitor.Log("Config created");
 
             adventureGuild = new AdventureGuild(CustomAdventureGuild.MapPath, CustomAdventureGuild.MapName);
             customAdventureGuild = new CustomAdventureGuild(Config.Challenges);
 
-            customAdventureGuild.GilNoRewardsText = Game1.content.LoadString("Characters\\Dialogue\\Gil:ComeBackLater");
-            customAdventureGuild.GilNappingText = Game1.content.LoadString("Characters\\Dialogue\\Gil:Snoring");
-
-            customAdventureGuild.GilNoRewardsText = "I ain't got any freebies anymore, ya damn hippie!";
-            customAdventureGuild.GilNappingText = "I'm tryin to get some sleep, ya damn hippie! *grumble*";
-
-            Monitor.Log("Custom guild created");
+            customAdventureGuild.GilNoRewardsText = Config.GilNoRewardDialogue;
+            customAdventureGuild.GilNappingText = Config.GilSleepingDialogue;
 
             SaveEvents.BeforeSave += presaveData;
             SaveEvents.AfterLoad += injectGuild;
@@ -74,12 +66,19 @@ namespace CustomGuildChallenges
             Monitor.Log(log, LogLevel.Info);
         }
 
+        /// <summary>
+        ///     Returns API object to add and remove challenges and update Gil's dialogue
+        /// </summary>
+        /// <returns>ConfigChallengeHelper</returns>
+        public override object GetApi()
+        {
+            return new ConfigChallengeHelper(customAdventureGuild);
+        }
+
         void injectGuild(object sender, EventArgs e)
         {
             string saveDataPath = Path.Combine("saveData", Constants.SaveFolderName + ".json");
             var saveData = modHelper.ReadJsonFile<SaveData>(saveDataPath) ?? new SaveData();
-
-            Monitor.Log("Read " + saveData.Challenges.Count + " challenges from save file");
 
             foreach (var savedChallenge in saveData.Challenges)
             {
@@ -100,8 +99,6 @@ namespace CustomGuildChallenges
                 {
                     Game1.locations.RemoveAt(i);
                     Game1.locations.Add(customAdventureGuild);
-
-                    Monitor.Log("CUSTOM GUILD INJECTED!!");
                 }
             }
         }
@@ -142,7 +139,7 @@ namespace CustomGuildChallenges
                 ChallengeName = "Slimes",
                 RequiredKillCount = 1000,
                 MonsterNames = { Monsters.GreenSlime, Monsters.FrostJelly, Monsters.Sludge },
-                RewardType = ItemType.Ring,
+                RewardType = (int)ItemType.Ring,
                 RewardItemNumber = (int)Rings.SlimeCharmerRing
             };
 
@@ -151,7 +148,7 @@ namespace CustomGuildChallenges
                 ChallengeName = "Void Spirits",
                 RequiredKillCount = 150,
                 MonsterNames = { Monsters.ShadowGuy, Monsters.ShadowShaman, Monsters.ShadowBrute },
-                RewardType = ItemType.Ring,
+                RewardType = (int)ItemType.Ring,
                 RewardItemNumber = (int)Rings.SavageRing
             };
 
@@ -160,7 +157,7 @@ namespace CustomGuildChallenges
                 ChallengeName = "Skeletons",
                 RequiredKillCount = 50,
                 MonsterNames = { Monsters.Skeleton, Monsters.SkeletonMage, Monsters.SkeletonWarrior },
-                RewardType = ItemType.Hat,
+                RewardType = (int)ItemType.Hat,
                 RewardItemNumber = (int)Hats.SkeletonMask
             };
 
@@ -169,7 +166,7 @@ namespace CustomGuildChallenges
                 ChallengeName = "Cave Insects",
                 RequiredKillCount = 125,
                 MonsterNames = { Monsters.Bug, Monsters.Grub, Monsters.Fly },
-                RewardType = ItemType.MeleeWeapon,
+                RewardType = (int)ItemType.MeleeWeapon,
                 RewardItemNumber = (int)MeleeWeapons.InsectHead
             };
 
@@ -178,7 +175,7 @@ namespace CustomGuildChallenges
                 ChallengeName = "Duggies",
                 RequiredKillCount = 30,
                 MonsterNames = { Monsters.Duggy },
-                RewardType = ItemType.Hat,
+                RewardType = (int)ItemType.Hat,
                 RewardItemNumber = (int)Hats.HardHat
             };
 
@@ -187,7 +184,7 @@ namespace CustomGuildChallenges
                 ChallengeName = "Bats",
                 RequiredKillCount = 100,
                 MonsterNames = { Monsters.Bat, Monsters.FrostBat, Monsters.LavaBat },
-                RewardType = ItemType.Ring,
+                RewardType = (int)ItemType.Ring,
                 RewardItemNumber = (int)Rings.VampireRing
             };
 
@@ -196,7 +193,7 @@ namespace CustomGuildChallenges
                 ChallengeName = "Dust Spirits",
                 RequiredKillCount = 500,
                 MonsterNames = { Monsters.DustSpirit },
-                RewardType = ItemType.Ring,
+                RewardType = (int)ItemType.Ring,
                 RewardItemNumber = (int)Rings.BurglarsRing
             };
 

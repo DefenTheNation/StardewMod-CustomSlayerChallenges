@@ -209,13 +209,13 @@ namespace CustomGuildChallenges
         /// <param name="rewardType"></param>
         /// <param name="rewardItemNumber"></param>
         /// <returns></returns>
-        protected virtual Item CreateReward(ItemType rewardType, int rewardItemNumber)
+        protected virtual Item CreateReward(int rewardType, int rewardItemNumber)
         {
             switch(rewardType)
             {
-                case ItemType.Hat:
+                case (int)ItemType.Hat:
                     return new Hat(rewardItemNumber);
-                case ItemType.Ring:
+                case (int)ItemType.Ring:
                     return new Ring(rewardItemNumber);
                 default:
                     return ObjectFactory.getItemFromDescription((byte)rewardType, rewardItemNumber, 1);

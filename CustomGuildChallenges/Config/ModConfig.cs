@@ -6,6 +6,8 @@ namespace CustomGuildChallenges
     public class ModConfig
     {
         public bool CustomChallengesEnabled { get; set; }
+        public string GilNoRewardDialogue { get; set; }
+        public string GilSleepingDialogue { get; set; }
         public List<ChallengeInfo> Challenges { get; set; }
 
         public ModConfig()
