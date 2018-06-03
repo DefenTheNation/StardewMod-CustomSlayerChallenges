@@ -1,10 +1,12 @@
 ﻿{
   "CustomChallengesEnabled": false,
+  "GilNoRewardDialogue": "...Come back when you've got something to show me, kid",
+  "GilSleepingDialogue": "...*snore*...",
   "Challenges": [
     {
       "ChallengeName": "Slimes",
       "RequiredKillCount": 1000,
-      "RewardType": 8,
+      "RewardType": 7,
       "RewardItemNumber": 520,
       "MonsterNames": [
         "Green Slime",
@@ -15,7 +17,7 @@
     {
       "ChallengeName": "Void Spirits",
       "RequiredKillCount": 150,
-      "RewardType": 8,
+      "RewardType": 7,
       "RewardItemNumber": 523,
       "MonsterNames": [
         "Shadow Guy",
@@ -26,7 +28,7 @@
     {
       "ChallengeName": "Skeletons",
       "RequiredKillCount": 50,
-      "RewardType": 7,
+      "RewardType": 6,
       "RewardItemNumber": 8,
       "MonsterNames": [
         "Skeleton",
@@ -48,7 +50,7 @@
     {
       "ChallengeName": "Duggies",
       "RequiredKillCount": 30,
-      "RewardType": 7,
+      "RewardType": 6,
       "RewardItemNumber": 27,
       "MonsterNames": [
         "Duggy"
@@ -57,7 +59,7 @@
     {
       "ChallengeName": "Bats",
       "RequiredKillCount": 100,
-      "RewardType": 8,
+      "RewardType": 7,
       "RewardItemNumber": 522,
       "MonsterNames": [
         "Bat",
@@ -68,7 +70,7 @@
     {
       "ChallengeName": "Dust Spirits",
       "RequiredKillCount": 500,
-      "RewardType": 8,
+      "RewardType": 7,
       "RewardItemNumber": 526,
       "MonsterNames": [
         "Dust Spirit"

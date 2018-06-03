@@ -1,4 +1,6 @@
-﻿namespace CustomGuildChallenges
+﻿using System.Collections.Generic;
+
+namespace CustomGuildChallenges
 {
     /// <summary>
     ///     Static monster names used in lookup of kill stats
@@ -47,5 +49,40 @@
         public static string Spiker { get; set; } = "Spiker";
         // Does ConcernedApe hate cats?
         public static string Cat { get; set; } = "Cat";
+
+        public static IList<string> MonsterList = new List<string>()
+        {
+            GreenSlime,
+            FrostJelly,
+            Sludge,
+            BigSlime,
+            Bug,
+            Grub,
+            Fly,
+            Skeleton,
+            SkeletonMage,
+            SkeletonWarrior,
+            Bat,
+            FrostBat,
+            LavaBat,
+            IridiumBat,
+            RockCrab,
+            LavaCrab,
+            IridiumCrab,
+            ShadowGuy,
+            ShadowBrute,
+            ShadowShaman,
+            Ghost,
+            CarbonGhost,
+            StoneGolem,
+            WildernessGolem,
+            Duggy,
+            DustSpirit,
+            Mummy,
+            Serpent,
+            MetalHead,
+            Spiker,
+            Cat
+        };
     }
 }

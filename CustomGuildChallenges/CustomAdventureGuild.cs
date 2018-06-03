@@ -209,7 +209,7 @@ namespace CustomGuildChallenges
         /// <param name="rewardType"></param>
         /// <param name="rewardItemNumber"></param>
         /// <returns></returns>
-        protected virtual Item CreateReward(int rewardType, int rewardItemNumber)
+        public virtual Item CreateReward(int rewardType, int rewardItemNumber)
         {
             switch(rewardType)
             {

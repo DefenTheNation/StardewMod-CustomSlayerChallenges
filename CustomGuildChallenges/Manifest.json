@@ -5,6 +5,6 @@
   "Description": "Customize the adventure guild challenges and rewards!",
   "UniqueID": "DefenTheNation.CustomGuildChallenges",
   "EntryDll": "CustomGuildChallenges.dll",
-  "MinimumApiVersion": "2.6",
+  "MinimumApiVersion": "2.5",
   "UpdateKeys": []
 }

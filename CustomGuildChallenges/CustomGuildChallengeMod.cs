@@ -43,6 +43,30 @@ namespace CustomGuildChallenges
                 Config.Challenges = GetVanillaSlayerChallenges().ToList();
             }
 
+            // Verify config
+            for(int i = 0; i < Config.Challenges.Count; i++)
+            {
+                for(int j = 0; j < Config.Challenges[i].MonsterNames.Count; j++)
+                {
+                    if(!Monsters.MonsterList.Contains(Config.Challenges[i].MonsterNames[j]))
+                    {
+                        Monitor.Log("Warning: Invalid monster name '" + Config.Challenges[i].MonsterNames[j] +
+                            "' found. " + Config.Challenges[i].ChallengeName + " challenge will display but " +
+                            "cannot be completed until monster name is fixed! ", LogLevel.Warn);
+                    }
+                }
+
+                // TODO: Validate items on startup
+                //Monitor.Log("Getting item for " + Config.Challenges[i].ChallengeName);
+                //Monitor.Log("RT: " + Config.Challenges[i].RewardType + ", RI: " + Config.Challenges[i].RewardItemNumber);
+                //var item = customAdventureGuild.CreateReward(Config.Challenges[i].RewardType, Config.Challenges[i].RewardItemNumber);
+                //if(item == null)
+                //{
+                //    Monitor.Log("Warning: Invalid item for " + Config.Challenges[i].ChallengeName + " challenge. Reward will " +
+                //        "not be collectable until item values are fixed in the config! ");
+                //}
+            }
+
             adventureGuild = new AdventureGuild(CustomAdventureGuild.MapPath, CustomAdventureGuild.MapName);
             customAdventureGuild = new CustomAdventureGuild(Config.Challenges);
 
