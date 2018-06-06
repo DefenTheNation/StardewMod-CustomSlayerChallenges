@@ -74,6 +74,9 @@
     <Compile Include="SlayerChallenge.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Manifest.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -21,7 +21,7 @@ namespace CustomGuildChallenges
         public static string SkeletonWarrior { get; set; } = "Skeleton Warrior";
         
         public static string Bat { get; set; } = "Bat";
-        public static string FrostBat { get; set; } = "FrostBat";
+        public static string FrostBat { get; set; } = "Frost Bat";
         public static string LavaBat { get; set; } = "Lava Bat";
         public static string IridiumBat { get; set; } = "Iridium Bat";
 
@@ -46,8 +46,10 @@ namespace CustomGuildChallenges
         public static string Serpent { get; set; } = "Serpent";
 
         public static string MetalHead { get; set; } = "Metal Head";
+        public static string SquidKid { get; set; } = "Squid Kid";
+
+        // In Monsters.xnb but not used (?)
         public static string Spiker { get; set; } = "Spiker";
-        // Does ConcernedApe hate cats?
         public static string Cat { get; set; } = "Cat";
 
         public static IList<string> MonsterList = new List<string>()
@@ -81,6 +83,7 @@ namespace CustomGuildChallenges
             Mummy,
             Serpent,
             MetalHead,
+            SquidKid,
             Spiker,
             Cat
         };

@@ -80,14 +80,68 @@ namespace CustomGuildChallenges
 
             modHelper.ConsoleCommands.Add("player_setkills", "", (command, arguments) =>
             {
-                Game1.stats.specificMonstersKilled[arguments[0]] = int.Parse(arguments[1]);
+                int killCount;
+                if(arguments.Length != 2)
+                {
+                    Monitor.Log("Usage: player_setkills \"Monster Name\" integerKillCount ", LogLevel.Warn);
+                }
+                else if(!int.TryParse(arguments[1], out killCount))
+                {
+                    Monitor.Log("Invalid kill count. Use an integer, like 50 or 100. Example: player_setkills \"Green Slime\" 100 ", LogLevel.Warn);
+                }
+                else
+                {
+                    int before = Game1.stats.getMonstersKilled(arguments[0]);
+                    Game1.stats.specificMonstersKilled[arguments[0]] = killCount;
+
+                    Monitor.Log(arguments[0] + " kills changed from " + before + " to " + killCount, LogLevel.Info);
+                }
+            });
+
+            modHelper.ConsoleCommands.Add("player_getkills", "", (command, arguments) =>
+            {
+                if(arguments.Length == 0)
+                {
+                    Monitor.Log("Usage: player_getkills \"Monster Name\"", LogLevel.Warn);
+                }
+                else
+                {
+                    Monitor.Log(arguments[0] + "'s killed: " + Game1.stats.getMonstersKilled(arguments[0]), LogLevel.Info);
+                }               
+            });
+
+            modHelper.ConsoleCommands.Add("player_giveitem", "", (command, arguments) =>
+            {
+                int itemNumber;
+                if (arguments.Length != 1)
+                {
+                    Monitor.Log("Usage: player_giveitem itemNumber", LogLevel.Warn);
+                }
+                else if (!int.TryParse(arguments[0], out itemNumber))
+                {
+                    Monitor.Log("Invalid item number. Use an integer, like 50 or 100. Example: player_giveitem 100 ", LogLevel.Warn);
+                }
+                else
+                {
+                    var item = customAdventureGuild.CreateReward(0, itemNumber);
+
+                    if(item == null)
+                    {
+                        Monitor.Log("Invalid item number:  " + itemNumber + ". No item was spawned.", LogLevel.Warn);
+                    }
+                    else
+                    {
+                        Game1.player.addItemsByMenuIfNecessary(new Item[] { item }.ToList());
+                        Monitor.Log("Item " + item.DisplayName + " given to player.", LogLevel.Info);
+                    }
+                }
             });
 
             string log = Config.CustomChallengesEnabled ?
                 "Initialized (" + Config.Challenges.Count + " custom challenges uploaded)" :
                 "Initialized (Vanilla challenges loaded)";
 
-            Monitor.Log(log, LogLevel.Info);
+            Monitor.Log(log, LogLevel.Debug);
         }
 
         /// <summary>
@@ -206,7 +260,7 @@ namespace CustomGuildChallenges
             var batChallenge = new ChallengeInfo()
             {
                 ChallengeName = "Bats",
-                RequiredKillCount = 100,
+                RequiredKillCount = 200,
                 MonsterNames = { Monsters.Bat, Monsters.FrostBat, Monsters.LavaBat },
                 RewardType = (int)ItemType.Ring,
                 RewardItemNumber = (int)Rings.VampireRing

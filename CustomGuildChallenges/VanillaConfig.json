@@ -58,7 +58,7 @@
     },
     {
       "ChallengeName": "Bats",
-      "RequiredKillCount": 100,
+      "RequiredKillCount": 200,
       "RewardType": 7,
       "RewardItemNumber": 522,
       "MonsterNames": [
