@@ -3,6 +3,22 @@
 Custom Adventure Guild Challenges
 -------------------------------------
 
+QUICK START
+
+The mod comes with a preset configuration. No additional setup is required.
+To change back to vanilla challenges, change the following line in the config.json file:
+
+"CustomChallengesEnabled": true
+
+	- TO -
+
+"CustomChallengesEnabled": false
+
+Your save data will remain the same so if you switch back to custom challenges, you can pick up right where you left off!
+
+
+INTRODUCTION
+
 Thank you for downloading the mod! With a little work, you can customize your guild goals and rewards as you see fit!
 If you are unfamiliar with JSON files, check out a tutorial (google "JSON tutorial") before proceeding.
 
@@ -55,7 +71,7 @@ The following values are valid for MonsterNames:
 		"Skeleton Warrior"
         
 		"Bat"
-		"FrostBat"
+		"Frost Bat"
 		"Lava Bat"
 		"Iridium Bat"
 

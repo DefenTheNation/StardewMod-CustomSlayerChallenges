@@ -23,6 +23,7 @@
         YobaRing = 524,
         SturdyRing = 525,
         BurglarsRing = 526,
+        IridiumBand = 527,
         JukeboxRing = 528
     }
 
