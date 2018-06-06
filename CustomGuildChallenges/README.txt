@@ -42,6 +42,17 @@ so any changes you make are never updated or deleted.
 Set to false if you want to keep the vanilla challenges. You do not have to modify the rest of the config if this is set to false. The mod will ignore it.
 If you want to use the challenges listed in the config instead of the vanilla challenges, change 'false' to 'true' (without the single quotes).
 
+"CountKillsOnFarm"
+By default, kills on the farm do not count toward the challenge goals. This mod enables kills for Wilderness Golems on farms because that's the only place
+they show up. If you want all other monster kills to count toward the goals too, change 'false' to 'true' (without the single quotes).
+
+"GilNoRewardDialogue"
+This is what Gil says first time you talk to him in the guild and he has no rewards for you. You can make him as nice or as mean as you want.
+
+"GilSleepingDialogue"
+This is what Gil says after the first time you talk to him. Normally he snores, but now you decide what he says.
+
+
 "Challenges" - This is an array of challenges, meaning there are multiple challenges in this section.
 Here are the fields for a single challenge:
 

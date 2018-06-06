@@ -1,5 +1,6 @@
 ﻿{
   "CustomChallengesEnabled": true,
+  "CountKillsOnFarm": true,
   "GilNoRewardDialogue": "I ain't got nothin' for ya. Now get out there and get to swingin' that sword.",
   "GilSleepingDialogue": "I'm tryin to sleep, ya rascal! *grumble grumble*",
   "Challenges": [
@@ -99,9 +100,19 @@
       "ChallengeName": "Big Slimes",
       "RequiredKillCount": 100,
       "RewardType": 0,
-      "RewardItemNumber": 413,
+      "RewardItemNumber": 439,
       "MonsterNames": [
         "Big Slime"
+      ]
+    },
+    {
+      "ChallengeName": "Golems",
+      "RequiredKillCount": 100,
+      "RewardType": 2,
+      "RewardItemNumber": 29,
+      "MonsterNames": [
+        "Wilderness Golem",
+        "Stone Golem"
       ]
     },
     {
@@ -124,9 +135,9 @@
     },
     {
       "ChallengeName": "Valley Monsters",
-      "RequiredKillCount": 3000,
-      "RewardType": 7,
-      "RewardItemNumber": 527,
+      "RequiredKillCount": 4000,
+      "RewardType": 3,
+      "RewardItemNumber": 3,
       "MonsterNames": [
         "Green Slime",
         "Frost Jelly",

@@ -3,6 +3,7 @@ using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Locations;
+using StardewValley.Monsters;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +16,7 @@ namespace CustomGuildChallenges
     {
         protected IModHelper modHelper;
         protected AdventureGuild adventureGuild;
-        protected CustomAdventureGuild customAdventureGuild;
+        protected ConfigChallengeHelper challengeHelper;
 
         public ModConfig Config { get; set; }
 
@@ -68,24 +69,25 @@ namespace CustomGuildChallenges
             }
 
             adventureGuild = new AdventureGuild(CustomAdventureGuild.MapPath, CustomAdventureGuild.MapName);
-            customAdventureGuild = new CustomAdventureGuild(Config.Challenges);
+            challengeHelper = new ConfigChallengeHelper(new CustomAdventureGuild(Config.Challenges));
 
-            customAdventureGuild.GilNoRewardsText = Config.GilNoRewardDialogue;
-            customAdventureGuild.GilNappingText = Config.GilSleepingDialogue;
+            challengeHelper.customAdventureGuild.GilNoRewardsText = Config.GilNoRewardDialogue;
+            challengeHelper.customAdventureGuild.GilNappingText = Config.GilSleepingDialogue;
 
             SaveEvents.BeforeSave += presaveData;
-            SaveEvents.AfterLoad += injectGuild;
-            SaveEvents.AfterCreate += injectGuild;
             SaveEvents.AfterSave += injectGuild;
+            SaveEvents.AfterLoad += injectGuild;
+            SaveEvents.AfterLoad += SaveEvents_SetupMonstersKilled;
+            SaveEvents.AfterCreate += injectGuild;
+            SaveEvents.AfterCreate += SaveEvents_SetupMonstersKilled;            
 
             modHelper.ConsoleCommands.Add("player_setkills", "", (command, arguments) =>
             {
-                int killCount;
-                if(arguments.Length != 2)
+                if (arguments.Length != 2)
                 {
                     Monitor.Log("Usage: player_setkills \"Monster Name\" integerKillCount ", LogLevel.Warn);
                 }
-                else if(!int.TryParse(arguments[1], out killCount))
+                else if (!int.TryParse(arguments[1], out int killCount))
                 {
                     Monitor.Log("Invalid kill count. Use an integer, like 50 or 100. Example: player_setkills \"Green Slime\" 100 ", LogLevel.Warn);
                 }
@@ -112,20 +114,19 @@ namespace CustomGuildChallenges
 
             modHelper.ConsoleCommands.Add("player_giveitem", "", (command, arguments) =>
             {
-                int itemNumber;
                 if (arguments.Length != 1)
                 {
                     Monitor.Log("Usage: player_giveitem itemNumber", LogLevel.Warn);
                 }
-                else if (!int.TryParse(arguments[0], out itemNumber))
+                else if (!int.TryParse(arguments[0], out int itemNumber))
                 {
                     Monitor.Log("Invalid item number. Use an integer, like 50 or 100. Example: player_giveitem 100 ", LogLevel.Warn);
                 }
                 else
                 {
-                    var item = customAdventureGuild.CreateReward(0, itemNumber);
+                    var item = challengeHelper.customAdventureGuild.CreateReward(0, itemNumber);
 
-                    if(item == null)
+                    if (item == null)
                     {
                         Monitor.Log("Invalid item number:  " + itemNumber + ". No item was spawned.", LogLevel.Warn);
                     }
@@ -137,11 +138,35 @@ namespace CustomGuildChallenges
                 }
             });
 
+            modHelper.ConsoleCommands.Add("player_getallkills", "", (command, arguments) =>
+            {
+                foreach(var item in Game1.player.stats.specificMonstersKilled)
+                {
+                    Monitor.Log(item.Key + "'s killed: " + item.Value);
+                }
+            });
+
             string log = Config.CustomChallengesEnabled ?
                 "Initialized (" + Config.Challenges.Count + " custom challenges uploaded)" :
                 "Initialized (Vanilla challenges loaded)";
 
             Monitor.Log(log, LogLevel.Debug);
+        }
+
+        private void SaveEvents_SetupMonstersKilled(object sender, EventArgs e)
+        {
+            challengeHelper.SetupMonsterKilledEvent();
+            challengeHelper.MonsterKilled += Events_MonsterKilled;
+        }
+
+        private void Events_MonsterKilled(object sender, Monster e)
+        {
+            if (!(sender is GameLocation location)) return;
+
+            if (location.IsFarm && (Config.CountKillsOnFarm || e.Name == Monsters.WildernessGolem))
+            {
+                Game1.player.stats.monsterKilled(e.Name);
+            }
         }
 
         /// <summary>
@@ -150,7 +175,7 @@ namespace CustomGuildChallenges
         /// <returns>ConfigChallengeHelper</returns>
         public override object GetApi()
         {
-            return new ConfigChallengeHelper(customAdventureGuild);
+            return new ConfigChallengeHelper(challengeHelper.customAdventureGuild);
         }
 
         void injectGuild(object sender, EventArgs e)
@@ -160,7 +185,7 @@ namespace CustomGuildChallenges
 
             foreach (var savedChallenge in saveData.Challenges)
             {
-                foreach (var slayerChallenge in customAdventureGuild.ChallengeList)
+                foreach (var slayerChallenge in challengeHelper.customAdventureGuild.ChallengeList)
                 {
                     if (savedChallenge.ChallengeName == slayerChallenge.Info.ChallengeName)
                     {
@@ -176,7 +201,7 @@ namespace CustomGuildChallenges
                 if (Game1.locations[i].Name == CustomAdventureGuild.MapName)
                 {
                     Game1.locations.RemoveAt(i);
-                    Game1.locations.Add(customAdventureGuild);
+                    Game1.locations.Add(challengeHelper.customAdventureGuild);
                 }
             }
         }
@@ -186,7 +211,7 @@ namespace CustomGuildChallenges
             string saveDataPath = Path.Combine("saveData", Constants.SaveFolderName + ".json");
             var saveData = new SaveData();
 
-            foreach (var slayerChallenge in customAdventureGuild.ChallengeList)
+            foreach (var slayerChallenge in challengeHelper.customAdventureGuild.ChallengeList)
             {
                 var save = new ChallengeSave()
                 {
@@ -198,7 +223,7 @@ namespace CustomGuildChallenges
             }
 
             modHelper.WriteJsonFile(saveDataPath, saveData);
-            Monitor.Log("Saved " + customAdventureGuild.ChallengeList.Count + " challenges.");
+            Monitor.Log("Saved " + challengeHelper.customAdventureGuild.ChallengeList.Count + " challenges.");
 
             for (int i = 0; i < Game1.locations.Count; i++)
             {

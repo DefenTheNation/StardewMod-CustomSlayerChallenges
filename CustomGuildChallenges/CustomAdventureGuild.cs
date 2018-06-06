@@ -125,6 +125,7 @@ namespace CustomGuildChallenges
        /// </summary>
         protected virtual void TalkToGil()
         {
+            int specialItemsCollected = 0;
             List<Item> rewards = new List<Item>();
 
             foreach(var challenge in ChallengeList)
@@ -147,16 +148,25 @@ namespace CustomGuildChallenges
                             "Reward Type: " + challenge.Info.RewardType + "\n" +
                             "Reward Item Number: " + challenge.Info.RewardItemNumber + "\n");
                     }
+                    // Add special section for special item
+                    else if (rewardItem is SpecialItem specialItem)
+                    {
+                        Game1.player.holdUpItemThenMessage(specialItem, true);
+                        specialItem.actionWhenReceived(Game1.player);
+
+                        specialItemsCollected++;
+                    }
                     else if (rewardItem is StardewValley.Object)
                     {
                         rewardItem.specialItem = true;
+                        rewards.Add(rewardItem);
                     }
                     else if (!Game1.player.hasOrWillReceiveMail("Gil_" + challenge.Info.ChallengeName + "_" + rewardItem.Name))
                     {
                         Game1.player.mailReceived.Add("Gil_" + challenge.Info.ChallengeName + "_" + rewardItem.Name);
+                        rewards.Add(rewardItem);
                     }
-
-                    rewards.Add(rewardItem);
+                    
                     challenge.CollectedReward = true;
                 }
             }
@@ -164,6 +174,10 @@ namespace CustomGuildChallenges
             if(rewards.Count > 0)
             {
                 Game1.activeClickableMenu = new ItemGrabMenu(rewards);
+            }
+            else if(specialItemsCollected > 0)
+            {
+                Game1.drawDialogue(Gil, "Thanks for cleaning up all those monsters. Figured you deserved somethin' extra special.");
             }
             else if(talkedToGil)
             {
@@ -214,6 +228,8 @@ namespace CustomGuildChallenges
                     return new Hat(rewardItemNumber);
                 case (int)ItemType.Ring:
                     return new Ring(rewardItemNumber);
+                case (int)ItemType.SpecialItem:
+                    return new SpecialItem(rewardItemNumber);
                 default:
                     return ObjectFactory.getItemFromDescription((byte)rewardType, rewardItemNumber, 1);
             }

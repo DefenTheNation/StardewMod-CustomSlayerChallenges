@@ -17,6 +17,10 @@
     // Item Type 7
     public enum Rings
     {
+        SmallGlowRing = 516,
+        GlowRing = 517,
+        SmallMagnetRing = 518,
+        MagnetRing = 519,
         SlimeCharmerRing = 520,
         VampireRing = 522,
         SavageRing = 523,
@@ -24,7 +28,13 @@
         SturdyRing = 525,
         BurglarsRing = 526,
         IridiumBand = 527,
-        JukeboxRing = 528
+        JukeboxRing = 528,
+        AmethystRing = 529,
+        TopazRing = 530,
+        AquamarineRing = 531,
+        JadeRing = 532,
+        EmeraldRing = 533,
+        RubyRing = 534
     }
 
     // Item Type 6
