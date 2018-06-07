@@ -1,11 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StardewModdingAPI;
+using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Locations;
 using StardewValley.Menus;
 using StardewValley.Objects;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using xTile.Dimensions;
 
@@ -27,6 +30,7 @@ namespace CustomGuildChallenges
         protected bool talkedToGil;
         protected readonly NPC Gil = new NPC(null, new Vector2(-1000f, -1000f), "AdventureGuild", 2, "Gil", false, null, Game1.content.Load<Texture2D>("Portraits\\Gil"));
 
+        protected IModHelper modHelper;
         public IList<SlayerChallenge> ChallengeList { get; set; }
 
         #region Constructors
@@ -35,13 +39,14 @@ namespace CustomGuildChallenges
         ///     Loads custom slayer challenge list with vanilla map path and name
         /// </summary>
         /// <param name="customChallengeList"></param>
-        public CustomAdventureGuild(IList<ChallengeInfo> customChallengeList) : base("Maps\\AdventureGuild", "AdventureGuild")
+        public CustomAdventureGuild(IList<ChallengeInfo> customChallengeList, IModHelper helper) : base(MapPath, MapName)
         {
             var challenges = new List<SlayerChallenge>();
             foreach (var info in customChallengeList) challenges.Add(new SlayerChallenge() { Info = info });
 
             ChallengeList = challenges;
-            AddMarlon();
+            modHelper = helper;
+            init();
         }
 
         /// <summary>
@@ -50,30 +55,24 @@ namespace CustomGuildChallenges
         /// <param name="map"></param>
         /// <param name="name"></param>
         /// <param name="customChallengeList"></param>
-        public CustomAdventureGuild(string map, string name, IList<SlayerChallenge> customChallengeList) : base(map, name)
+        public CustomAdventureGuild(IList<SlayerChallenge> customChallengeList, IModHelper helper, string map, string name) : base(map, name)
         {
             ChallengeList = customChallengeList;
-            AddMarlon();
+            modHelper = helper;
+            init();
         }
 
-        protected void AddMarlon()
+        protected void init()
         {
             addCharacter(new NPC(new AnimatedSprite("Characters\\Marlon", 0, 16, 32), new Vector2(320f, 704f), "AdventureGuild", 2, "Marlon", false, null, Game1.content.Load<Texture2D>("Portraits\\Marlon")));
+
+            SaveEvents.BeforeSave += presaveData;
+            SaveEvents.AfterSave += injectGuild;
+            SaveEvents.AfterLoad += injectGuild;
+            SaveEvents.AfterCreate += injectGuild;
         }
 
         #endregion
-
-        // Required to reset talkedToGil flag
-        protected override void resetLocalState()
-        {
-            base.resetLocalState();
-            talkedToGil = false;
-
-            if (!Game1.player.mailReceived.Contains("guildMember"))
-            {
-                Game1.player.mailReceived.Add("guildMember");
-            }
-        }
 
         // Required to reimplement Monster Kill List and Gil's rewards
         public override bool checkAction(Location tileLocation, xTile.Dimensions.Rectangle viewport, Farmer who)
@@ -96,6 +95,42 @@ namespace CustomGuildChallenges
             }
         }
 
+        /// <summary>
+        ///     Creates the reward item using StardewValley.Objects.ObjectFactory
+        /// </summary>
+        /// <param name="rewardType"></param>
+        /// <param name="rewardItemNumber"></param>
+        /// <returns></returns>
+        public virtual Item CreateReward(int rewardType, int rewardItemNumber)
+        {
+            switch (rewardType)
+            {
+                case (int)ItemType.Hat:
+                    return new Hat(rewardItemNumber);
+                case (int)ItemType.Ring:
+                    return new Ring(rewardItemNumber);
+                case (int)ItemType.SpecialItem:
+                    return new SpecialItem(rewardItemNumber);
+                default:
+                    return ObjectFactory.getItemFromDescription((byte)rewardType, rewardItemNumber, 1);
+            }
+        }
+
+        // Required to reset talkedToGil flag
+        protected override void resetLocalState()
+        {
+            base.resetLocalState();
+            talkedToGil = false;
+
+            if (!Game1.player.mailReceived.Contains("guildMember"))
+            {
+                Game1.player.mailReceived.Add("guildMember");
+            }
+        }
+
+        /// <summary>
+        ///     Build strings for display when viewing challenge list on guild wall
+        /// </summary>
         protected virtual void ShowNewMonsterKillList()
         {
             if (!Game1.player.mailReceived.Contains("checkedMonsterBoard"))
@@ -122,7 +157,7 @@ namespace CustomGuildChallenges
         }
 
        /// <summary>
-       ///  Checks to see if there are any 
+       ///      Checks to see if there are new rewards. If not, display a dialogue from Gil
        /// </summary>
         protected virtual void TalkToGil()
         {
@@ -216,23 +251,71 @@ namespace CustomGuildChallenges
         }
 
         /// <summary>
-        ///     Creates the reward item using StardewValley.Objects.ObjectFactory
+        ///     Saves the status of challenges and switches the
+        ///     CustomAdventureGuild with AdventureGuild to prevent
+        ///     crashing the save process
         /// </summary>
-        /// <param name="rewardType"></param>
-        /// <param name="rewardItemNumber"></param>
-        /// <returns></returns>
-        public virtual Item CreateReward(int rewardType, int rewardItemNumber)
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void presaveData(object sender, EventArgs e)
         {
-            switch(rewardType)
+            string saveDataPath = Path.Combine("saveData", Constants.SaveFolderName + ".json");
+            var saveData = new SaveData();
+
+            foreach (var slayerChallenge in ChallengeList)
             {
-                case (int)ItemType.Hat:
-                    return new Hat(rewardItemNumber);
-                case (int)ItemType.Ring:
-                    return new Ring(rewardItemNumber);
-                case (int)ItemType.SpecialItem:
-                    return new SpecialItem(rewardItemNumber);
-                default:
-                    return ObjectFactory.getItemFromDescription((byte)rewardType, rewardItemNumber, 1);
+                var save = new ChallengeSave()
+                {
+                    ChallengeName = slayerChallenge.Info.ChallengeName,
+                    Collected = slayerChallenge.CollectedReward
+                };
+
+                saveData.Challenges.Add(save);
+            }
+
+            modHelper.WriteJsonFile(saveDataPath, saveData);
+
+            for (int i = 0; i < Game1.locations.Count; i++)
+            {
+                if (Game1.locations[i].Name == MapName)
+                {
+                    Game1.locations.RemoveAt(i);
+                    Game1.locations.Add(this);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Read the save data file and replace the AdventureGuild with
+        ///     CustomAdventureGuild
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected virtual void injectGuild(object sender, EventArgs e)
+        {
+            string saveDataPath = Path.Combine("saveData", Constants.SaveFolderName + ".json");
+            var saveData = modHelper.ReadJsonFile<SaveData>(saveDataPath) ?? new SaveData();
+
+            foreach (var savedChallenge in saveData.Challenges)
+            {
+                foreach (var slayerChallenge in ChallengeList)
+                {
+                    if (savedChallenge.ChallengeName == slayerChallenge.Info.ChallengeName)
+                    {
+                        slayerChallenge.CollectedReward = savedChallenge.Collected;
+                        break;
+                    }
+                }
+            }
+
+            // Kill old guild, replace with new guild
+            for (int i = 0; i < Game1.locations.Count; i++)
+            {
+                if (Game1.locations[i].Name == MapName)
+                {
+                    Game1.locations.RemoveAt(i);
+                    Game1.locations.Add(this);
+                }
             }
         }
     }

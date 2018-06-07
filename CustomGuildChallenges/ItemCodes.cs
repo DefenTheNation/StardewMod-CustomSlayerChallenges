@@ -2,16 +2,48 @@
 {
     // Corresponds to ObjectFactory byte constants
     // Hat and Ring types added by this mod
+    // because they are created separately in the
+    // regular Adventure Guild
     public enum ItemType
     {
-        Regular = 0,                // Note: Stack count is hardcoded to 1
+        Regular = 0,                // Note: Stack count is hardcoded to 1 for nwo
         BigCraftable = 1,
         MeleeWeapon = 2,
         SpecialItem = 3,
         RegularObjectRecipe = 4,
         BigCraftableRecipe = 5,
         Hat = 6,
-        Ring = 7
+        Ring = 7,
+        Boots = 8
+    }
+
+    // Item Type 3
+    public enum SpecialItems
+    {
+        ClubCard = 2,
+        SpecialCharm = 3,
+        SkullKey = 4,
+        MagnifyingGlass = 5,
+        DarkTalisman = 6,
+        MagicInk = 7,
+        LargePack = 99
+    }
+
+    // Item Type 8
+    public enum Boots
+    {
+        Sneakers = 504,
+        RubberBoots = 505,
+        LeatherBoots = 506,
+        WorkBoots = 507,
+        CombatBoots = 508,
+        TundraBoots = 509,
+        ThermalBoots = 510,
+        DarkBoots = 511,
+        FirewalkerBoots = 512,
+        GenieShoes = 513,
+        SpaceBoots = 514,
+        CowboyBoots = 515
     }
 
     // Item Type 7
@@ -140,6 +172,7 @@
         TemperedBroadsword = 52
     }
 
+    // Item Type 1
     public enum BigCraftable
     {
         HousePlant1 = 0,
@@ -283,5 +316,108 @@
         SeasonalPlant4 = 196,
         SeasonalPlant5 = 200,
         SeasonalPlant6 = 204
+    }
+
+    // Item Type 0
+    public enum RegularItem
+    {
+        Weeds = 0,
+        Stone1 = 2,
+        Stone2 = 4,
+        WildHorseradish = 16,
+        Daffodil = 18,
+        Leek = 20,
+        Dandelion = 22,
+        Parsnip = 24,
+        Lumber = 30,
+        Emerald = 60,
+        Aquamarine = 62,
+        Ruby = 64,
+        Amethyst = 66,
+        Topaz = 68,
+        Jade = 70,
+        Diamond = 72,
+        PrismaticShard = 74,
+        Stone3 = 75,
+        Stone4 = 76,
+        Stone5 = 77,
+        CaveCarrot = 78,
+        SecretNote = 79,
+        Quartz = 80,
+        FireQuartz = 82,
+        FrozenTear = 84,
+        EarthCrystal = 86,
+        Coconut = 88,
+        CactusFruit = 90,
+        Sap = 92,
+        Torch = 93,
+        SpiritTorch = 94,
+        DwarfScrollI = 96,
+        DwarfScrollII = 97,
+        DwarfScrollIII = 98,
+        DwarfScrollIV = 99,
+        ChippedAmphora = 100,
+        Arrowhead = 101,
+        LostBook = 102,
+        AncientDoll = 103,
+        ElvishJewelry = 104,
+        ChewingStick = 105,
+        OrnamentalFan = 106,
+        DinosaurEgg = 107,
+        RareDisc = 108,
+        AncientSword = 109,
+        RustySpoon = 110,
+        RustySpur = 111,
+        RustyCog = 112,
+        ChickenStatue = 113,
+        AncientSeed = 114,
+        PrehistoricTool = 115,
+        DriedStarfish = 116,
+        Anchor = 117,
+        GlassShards = 118,
+        BoneFlute = 119,
+        PrehistoricHandaxe = 120,
+        DwarvishHelm = 121,
+        DwarfGadget = 122,
+        AncientDrum = 123,
+        GoldenMask = 124,
+        GoldenRelic = 125,
+        StrangeDoll1 = 126,
+        StrangeDoll2 = 127,
+        Pufferfish = 128,
+        Anchovy = 129,
+        Tuna = 130,
+        Sardine = 131,
+        Bream = 132,
+        LargemouthBass = 136,
+        SmallmouthBass = 137,
+        RainbowTrout = 138,
+        Salmon = 139,
+        Walleye = 140,
+        Perch = 141,
+        Carp = 142,
+        Catfish = 143,
+        Pike = 144,
+        Sunfish  = 145,
+        RedMullet = 146,
+        Herring = 147,
+        Eel = 148,
+        Octopus = 149,
+        RedSnapper = 150,
+        Squid = 151,
+        Seaweed = 152,
+        GreenAlgae = 153,
+        SeaCucumber = 154,
+        SuperCucumber = 155,
+        Ghostfish = 156,
+        WhiteAlgae = 157,
+        Stonefish = 158,
+        Crimsonfish = 159,
+        Angler = 160,
+        IcePip = 161,
+        LaveEel = 162,
+        Legend = 163,
+        Sandfish = 164,
+        ScorpionCarp = 165
     }
 }
