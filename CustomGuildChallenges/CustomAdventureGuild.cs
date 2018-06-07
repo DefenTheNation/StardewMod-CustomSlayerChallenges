@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using xTile.Dimensions;
 
 namespace CustomGuildChallenges
@@ -163,6 +165,7 @@ namespace CustomGuildChallenges
         {
             int specialItemsCollected = 0;
             List<Item> rewards = new List<Item>();
+            List<SlayerChallenge> completedChallenges = new List<SlayerChallenge>();
 
             foreach(var challenge in ChallengeList)
             {
@@ -184,6 +187,15 @@ namespace CustomGuildChallenges
                             "Reward Type: " + challenge.Info.RewardType + "\n" +
                             "Reward Item Number: " + challenge.Info.RewardItemNumber + "\n");
                     }
+                    else if(challenge.Info.RewardType == 0 && challenge.Info.RewardItemNumber == 434)   // Stardrop award
+                    {
+                        Game1.player.holdUpItemThenMessage(rewardItem, true);
+                        specialItemsCollected++;
+
+                        challenge.CollectedReward = true;
+
+                        break;
+                    }
                     // Add special section for special item
                     else if (rewardItem is SpecialItem specialItem)
                     {
@@ -191,8 +203,28 @@ namespace CustomGuildChallenges
                         specialItem.actionWhenReceived(Game1.player);
 
                         specialItemsCollected++;
+                        challenge.CollectedReward = true;
+
+                        break;
                     }
-                    else if (rewardItem is StardewValley.Object)
+                    else
+                    {
+                        completedChallenges.Add(challenge);
+                    }
+                }
+            }
+
+            if(specialItemsCollected > 0)
+            {
+                Game1.drawDialogue(Gil, GilSpecialRewardText);
+            }
+            else if(completedChallenges.Count > 0)
+            {
+                Item rewardItem;
+                foreach(var challenge in completedChallenges)
+                {
+                    rewardItem = CreateReward(challenge.Info.RewardType, challenge.Info.RewardItemNumber);
+                    if (rewardItem is StardewValley.Object)
                     {
                         rewardItem.specialItem = true;
                         rewards.Add(rewardItem);
@@ -202,18 +234,11 @@ namespace CustomGuildChallenges
                         Game1.player.mailReceived.Add("Gil_" + challenge.Info.ChallengeName + "_" + rewardItem.Name);
                         rewards.Add(rewardItem);
                     }
-                    
+
                     challenge.CollectedReward = true;
                 }
-            }
 
-            if(rewards.Count > 0)
-            {
                 Game1.activeClickableMenu = new ItemGrabMenu(rewards);
-            }
-            else if(specialItemsCollected > 0)
-            {
-                Game1.drawDialogue(Gil, GilSpecialRewardText);
             }
             else if(talkedToGil)
             {
