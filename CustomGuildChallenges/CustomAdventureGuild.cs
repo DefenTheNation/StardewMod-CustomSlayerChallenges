@@ -22,6 +22,7 @@ namespace CustomGuildChallenges
 
         public string GilNoRewardsText { get; set; } = "";
         public string GilNappingText { get; set; } = "";
+        public string GilSpecialRewardText { get; set; } = "";
 
         protected bool talkedToGil;
         protected readonly NPC Gil = new NPC(null, new Vector2(-1000f, -1000f), "AdventureGuild", 2, "Gil", false, null, Game1.content.Load<Texture2D>("Portraits\\Gil"));
@@ -177,7 +178,7 @@ namespace CustomGuildChallenges
             }
             else if(specialItemsCollected > 0)
             {
-                Game1.drawDialogue(Gil, "Thanks for cleaning up all those monsters. Figured you deserved somethin' extra special.");
+                Game1.drawDialogue(Gil, GilSpecialRewardText);
             }
             else if(talkedToGil)
             {

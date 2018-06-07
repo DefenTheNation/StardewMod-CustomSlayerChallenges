@@ -31,9 +31,11 @@ namespace CustomGuildChallenges
                 Config = new ModConfig()
                 {
                     CustomChallengesEnabled = false,
+                    CountKillsOnFarm = false,
                     Challenges = GetVanillaSlayerChallenges().ToList(),
                     GilNoRewardDialogue = Game1.content.LoadString("Characters\\Dialogue\\Gil:ComeBackLater"),
-                    GilSleepingDialogue = Game1.content.LoadString("Characters\\Dialogue\\Gil:Snoring")
+                    GilSleepingDialogue = Game1.content.LoadString("Characters\\Dialogue\\Gil:Snoring"),
+                    GilSpecialGiftDialogue = "Thanks for cleanin' up all those monsters. Figured you deserved somethin' extra special."
                 };
 
                 helper.WriteConfig(Config);
