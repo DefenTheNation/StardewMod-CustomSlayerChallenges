@@ -118,9 +118,9 @@
     },
     {
       "ChallengeName": "Mummies",
-      "RequiredKillCount": 100,
-      "RewardType": 2,
-      "RewardItemNumber": 34,
+      "RequiredKillCount": 200,
+      "RewardType": 1,
+      "RewardItemNumber": 127,
       "MonsterNames": [
         "Mummy"
       ]

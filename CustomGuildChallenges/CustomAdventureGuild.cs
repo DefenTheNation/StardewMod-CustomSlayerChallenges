@@ -10,8 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using xTile.Dimensions;
 
 namespace CustomGuildChallenges
@@ -189,6 +187,8 @@ namespace CustomGuildChallenges
                     }
                     else if(challenge.Info.RewardType == 0 && challenge.Info.RewardItemNumber == 434)   // Stardrop award
                     {
+                        Game1.drawDialogue(Gil, GilSpecialRewardText);
+
                         Game1.player.holdUpItemThenMessage(rewardItem, true);
                         specialItemsCollected++;
 
@@ -199,6 +199,8 @@ namespace CustomGuildChallenges
                     // Add special section for special item
                     else if (rewardItem is SpecialItem specialItem)
                     {
+                        Game1.drawDialogue(Gil, GilSpecialRewardText);
+
                         Game1.player.holdUpItemThenMessage(specialItem, true);
                         specialItem.actionWhenReceived(Game1.player);
 
@@ -216,7 +218,7 @@ namespace CustomGuildChallenges
 
             if(specialItemsCollected > 0)
             {
-                Game1.drawDialogue(Gil, GilSpecialRewardText);
+                // Do nothing
             }
             else if(completedChallenges.Count > 0)
             {
