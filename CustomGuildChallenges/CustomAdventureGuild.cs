@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Xml.Serialization;
 using xTile.Dimensions;
 
 namespace CustomGuildChallenges
@@ -37,6 +38,11 @@ namespace CustomGuildChallenges
         public IList<SlayerChallenge> ChallengeList { get; set; }
 
         #region Constructors
+
+        public CustomAdventureGuild() : base(StandardMapPath, StandardMapName)
+        {
+
+        }
 
         /// <summary>
         ///     Loads custom slayer challenge list with vanilla map path and name

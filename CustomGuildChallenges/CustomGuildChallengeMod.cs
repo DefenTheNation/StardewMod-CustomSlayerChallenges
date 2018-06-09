@@ -63,8 +63,7 @@ namespace CustomGuildChallenges
                 // TODO: Validate items on startup
                 
             }
-
-            
+           
             challengeHelper = new ConfigChallengeHelper(new CustomAdventureGuild(Config.Challenges, helper));
             challengeHelper.customAdventureGuild.GilNoRewardsText = Config.GilNoRewardDialogue;
             challengeHelper.customAdventureGuild.GilNappingText = Config.GilSleepingDialogue;
