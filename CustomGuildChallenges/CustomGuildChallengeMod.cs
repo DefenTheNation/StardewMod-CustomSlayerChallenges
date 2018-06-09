@@ -64,7 +64,7 @@ namespace CustomGuildChallenges
                 
             }
 
-            adventureGuild = new AdventureGuild(CustomAdventureGuild.MapPath, CustomAdventureGuild.MapName);
+            
             challengeHelper = new ConfigChallengeHelper(new CustomAdventureGuild(Config.Challenges, helper));
             challengeHelper.customAdventureGuild.GilNoRewardsText = Config.GilNoRewardDialogue;
             challengeHelper.customAdventureGuild.GilNappingText = Config.GilSleepingDialogue;

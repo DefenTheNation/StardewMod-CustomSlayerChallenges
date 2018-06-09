@@ -20,13 +20,16 @@ namespace CustomGuildChallenges
     /// </summary>
     public class CustomAdventureGuild : AdventureGuild
     {
-        public const string MapPath = "Maps\\AdventureGuild";
-        public const string MapName = "AdventureGuild";
+        public const string StandardMapPath = "Maps\\AdventureGuild";
+        public const string StandardMapName = "AdventureGuild";
 
+        public string MapName { get; set; }
+        public string MapPath { get; set; }
         public string GilNoRewardsText { get; set; } = "";
         public string GilNappingText { get; set; } = "";
         public string GilSpecialRewardText { get; set; } = "";
 
+        protected readonly AdventureGuild adventureGuild;
         protected bool talkedToGil;
         protected readonly NPC Gil = new NPC(null, new Vector2(-1000f, -1000f), "AdventureGuild", 2, "Gil", false, null, Game1.content.Load<Texture2D>("Portraits\\Gil"));
 
@@ -39,13 +42,18 @@ namespace CustomGuildChallenges
         ///     Loads custom slayer challenge list with vanilla map path and name
         /// </summary>
         /// <param name="customChallengeList"></param>
-        public CustomAdventureGuild(IList<ChallengeInfo> customChallengeList, IModHelper helper) : base(MapPath, MapName)
+        public CustomAdventureGuild(IList<ChallengeInfo> customChallengeList, IModHelper helper) : base(StandardMapPath, StandardMapName)
         {
             var challenges = new List<SlayerChallenge>();
             foreach (var info in customChallengeList) challenges.Add(new SlayerChallenge() { Info = info });
 
+            MapName = StandardMapName;
+            MapPath = StandardMapPath;
+
             ChallengeList = challenges;
             modHelper = helper;
+            adventureGuild = new AdventureGuild(StandardMapPath, StandardMapName);
+
             init();
         }
 
@@ -59,12 +67,16 @@ namespace CustomGuildChallenges
         {
             ChallengeList = customChallengeList;
             modHelper = helper;
+            adventureGuild = new AdventureGuild(StandardMapPath, StandardMapName);
+
             init();
         }
 
         protected void init()
         {
             addCharacter(new NPC(new AnimatedSprite("Characters\\Marlon", 0, 16, 32), new Vector2(320f, 704f), "AdventureGuild", 2, "Marlon", false, null, Game1.content.Load<Texture2D>("Portraits\\Marlon")));
+
+            
 
             SaveEvents.BeforeSave += presaveData;
             SaveEvents.AfterSave += injectGuild;
@@ -307,7 +319,7 @@ namespace CustomGuildChallenges
                 if (Game1.locations[i].Name == MapName)
                 {
                     Game1.locations.RemoveAt(i);
-                    Game1.locations.Add(this);
+                    Game1.locations.Add(adventureGuild);
                 }
             }
         }
@@ -338,7 +350,7 @@ namespace CustomGuildChallenges
             // Kill old guild, replace with new guild
             for (int i = 0; i < Game1.locations.Count; i++)
             {
-                if (Game1.locations[i].Name == MapName)
+                if (Game1.locations[i].Name == StandardMapName)
                 {
                     Game1.locations.RemoveAt(i);
                     Game1.locations.Add(this);
