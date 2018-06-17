@@ -52,6 +52,10 @@ namespace CustomGuildChallenges
         public static string Spiker { get; set; } = "Spiker";
         public static string Cat { get; set; } = "Cat";
 
+        // Added by this mod
+        public static string MutantGrub { get; set; } = "MutantGrub";
+        public static string MutantFly { get; set; } = "MutantFly";
+
         public static IList<string> MonsterList = new List<string>()
         {
             GreenSlime,
@@ -85,7 +89,9 @@ namespace CustomGuildChallenges
             MetalHead,
             SquidKid,
             Spiker,
-            Cat
+            Cat,
+            MutantGrub,
+            MutantFly
         };
     }
 }

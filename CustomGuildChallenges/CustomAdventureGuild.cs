@@ -10,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Xml.Serialization;
 using xTile.Dimensions;
 
 namespace CustomGuildChallenges
@@ -30,8 +29,8 @@ namespace CustomGuildChallenges
         public string GilNappingText { get; set; } = "";
         public string GilSpecialRewardText { get; set; } = "";
 
-        protected readonly AdventureGuild adventureGuild;
         protected bool talkedToGil;
+        protected readonly AdventureGuild adventureGuild;        
         protected readonly NPC Gil = new NPC(null, new Vector2(-1000f, -1000f), "AdventureGuild", 2, "Gil", false, null, Game1.content.Load<Texture2D>("Portraits\\Gil"));
 
         protected IModHelper modHelper;
@@ -119,7 +118,7 @@ namespace CustomGuildChallenges
         /// <param name="rewardType"></param>
         /// <param name="rewardItemNumber"></param>
         /// <returns></returns>
-        public virtual Item CreateReward(int rewardType, int rewardItemNumber)
+        public virtual Item CreateReward(int rewardType, int rewardItemNumber, int rewardItemStack)
         {
             switch (rewardType)
             {
@@ -129,8 +128,10 @@ namespace CustomGuildChallenges
                     return new Ring(rewardItemNumber);
                 case (int)ItemType.SpecialItem:
                     return new SpecialItem(rewardItemNumber);
+                case (int)ItemType.Boots:
+                    return new StardewValley.Objects.Boots(rewardItemNumber);
                 default:
-                    return ObjectFactory.getItemFromDescription((byte)rewardType, rewardItemNumber, 1);
+                    return ObjectFactory.getItemFromDescription((byte)rewardType, rewardItemNumber, rewardItemStack);
             }
         }
 
@@ -183,6 +184,7 @@ namespace CustomGuildChallenges
             List<Item> rewards = new List<Item>();
             List<SlayerChallenge> completedChallenges = new List<SlayerChallenge>();
 
+            // Check for available rewards
             foreach(var challenge in ChallengeList)
             {
                 if (challenge.CollectedReward) continue;
@@ -195,7 +197,7 @@ namespace CustomGuildChallenges
 
                 if(kills >= challenge.Info.RequiredKillCount)
                 {
-                    var rewardItem = CreateReward(challenge.Info.RewardType, challenge.Info.RewardItemNumber);
+                    var rewardItem = CreateReward(challenge.Info.RewardType, challenge.Info.RewardItemNumber, challenge.Info.RewardItemStack);
 
                     if (rewardItem == null)
                     {
@@ -234,16 +236,17 @@ namespace CustomGuildChallenges
                 }
             }
 
+            // Display rewards/dialogue for talking to Gil
             if(specialItemsCollected > 0)
             {
-                // Do nothing
+                return;
             }
             else if(completedChallenges.Count > 0)
             {
                 Item rewardItem;
                 foreach(var challenge in completedChallenges)
                 {
-                    rewardItem = CreateReward(challenge.Info.RewardType, challenge.Info.RewardItemNumber);
+                    rewardItem = CreateReward(challenge.Info.RewardType, challenge.Info.RewardItemNumber, challenge.Info.RewardItemStack);
                     if (rewardItem is StardewValley.Object)
                     {
                         rewardItem.specialItem = true;

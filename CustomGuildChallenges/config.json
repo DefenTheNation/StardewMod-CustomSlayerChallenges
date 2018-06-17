@@ -1,15 +1,17 @@
 ﻿{
   "CustomChallengesEnabled": true,
   "CountKillsOnFarm": true,
+  "DebugMonsterKills": true,
   "GilNoRewardDialogue": "I ain't got nothin' for ya. Now get out there and get to swingin' that sword.",
   "GilSleepingDialogue": "I'm tryin to sleep, ya rascal! *grumble grumble*",
-  "GilSpecialGiftDialogue": "Thanks for cleanin' up all those monsters. Figured you deserved somethin' extra special.",
+  "GilSpecialGiftDialogue": "Thanks for cleanin' up all those varmints. Figured you deserved somethin' extra special.",
   "Challenges": [
     {
       "ChallengeName": "Slimes",
       "RequiredKillCount": 1000,
       "RewardType": 7,
       "RewardItemNumber": 520,
+      "RewardItemStack": 1,
       "MonsterNames": [
         "Green Slime",
         "Frost Jelly",
@@ -21,6 +23,7 @@
       "RequiredKillCount": 200,
       "RewardType": 7,
       "RewardItemNumber": 522,
+      "RewardItemStack": 1,
       "MonsterNames": [
         "Bat",
         "Frost Bat",
@@ -29,10 +32,23 @@
       ]
     },
     {
+      "ChallengeName": "Crabs",
+      "RequiredKillCount": 200,
+      "RewardType": 0,
+      "RewardItemNumber": 710,
+      "RewardItemStack": 10,
+      "MonsterNames": [
+        "Rock Crab",
+        "Lava Crab",
+        "Iridium Crab"
+      ]
+    },
+    {
       "ChallengeName": "Cave Insects",
       "RequiredKillCount": 125,
       "RewardType": 2,
       "RewardItemNumber": 13,
+      "RewardItemStack": 1,
       "MonsterNames": [
         "Bug",
         "Grub",
@@ -44,24 +60,48 @@
       "RequiredKillCount": 30,
       "RewardType": 6,
       "RewardItemNumber": 27,
+      "RewardItemStack": 1,
       "MonsterNames": [
         "Duggy"
       ]
     },
     {
+      "ChallengeName": "Golems",
+      "RequiredKillCount": 30,
+      "RewardType": 2,
+      "RewardItemNumber": 50,
+      "RewardItemStack": 1,
+      "MonsterNames": [
+        "Wilderness Golem",
+        "Stone Golem"
+      ]
+    },
+    {
       "ChallengeName": "Frost Jellies",
-      "RequiredKillCount": 150,
+      "RequiredKillCount": 50,
       "RewardType": 2,
       "RewardItemNumber": 52,
+      "RewardItemStack": 1,
       "MonsterNames": [
         "Frost Jelly"
       ]
     },
     {
-      "ChallengeName": "Dust Spirits",
+      "ChallengeName": "Dust Spirits I",
+      "RequiredKillCount": 250,
+      "RewardType": 0,
+      "RewardItemNumber": 382,
+      "RewardItemStack": 50,
+      "MonsterNames": [
+        "Dust Spirit"
+      ]
+    },
+    {
+      "ChallengeName": "Dust Spirits II",
       "RequiredKillCount": 500,
       "RewardType": 7,
       "RewardItemNumber": 526,
+      "RewardItemStack": 1,
       "MonsterNames": [
         "Dust Spirit"
       ]
@@ -71,17 +111,17 @@
       "RequiredKillCount": 50,
       "RewardType": 6,
       "RewardItemNumber": 8,
+      "RewardItemStack": 1,
       "MonsterNames": [
-        "Skeleton",
-        "Skeleton Mage",
-        "Skeleton Warrior"
+        "Skeleton"
       ]
     },
     {
       "ChallengeName": "Metal Heads",
-      "RequiredKillCount": 150,
+      "RequiredKillCount": 30,
       "RewardType": 2,
       "RewardItemNumber": 46,
+      "RewardItemStack": 1,
       "MonsterNames": [
         "Metal Head"
       ]
@@ -91,6 +131,7 @@
       "RequiredKillCount": 150,
       "RewardType": 7,
       "RewardItemNumber": 523,
+      "RewardItemStack": 1,
       "MonsterNames": [
         "Shadow Guy",
         "Shadow Shaman",
@@ -102,18 +143,20 @@
       "RequiredKillCount": 100,
       "RewardType": 0,
       "RewardItemNumber": 439,
+      "RewardItemStack": 5,
       "MonsterNames": [
         "Big Slime"
       ]
     },
     {
-      "ChallengeName": "Golems",
-      "RequiredKillCount": 100,
+      "ChallengeName": "Mutant Insects",
+      "RequiredKillCount": 200,
       "RewardType": 2,
-      "RewardItemNumber": 29,
+      "RewardItemNumber": 527,
+      "RewardItemStack": 1,
       "MonsterNames": [
-        "Wilderness Golem",
-        "Stone Golem"
+        "MutantGrub",
+        "MutantFly"
       ]
     },
     {
@@ -121,6 +164,7 @@
       "RequiredKillCount": 200,
       "RewardType": 1,
       "RewardItemNumber": 127,
+      "RewardItemStack": 1,
       "MonsterNames": [
         "Mummy"
       ]
@@ -130,6 +174,7 @@
       "RequiredKillCount": 200,
       "RewardType": 2,
       "RewardItemNumber": 29,
+      "RewardItemStack": 1,
       "MonsterNames": [
         "Serpent"
       ]
@@ -139,6 +184,7 @@
       "RequiredKillCount": 4000,
       "RewardType": 3,
       "RewardItemNumber": 3,
+      "RewardItemStack": 1,
       "MonsterNames": [
         "Green Slime",
         "Frost Jelly",
@@ -172,6 +218,7 @@
       "RequiredKillCount": 1000,
       "RewardType": 0,
       "RewardItemNumber": 434,
+      "RewardItemStack": 1,
       "MonsterNames": [
         "Serpent",
         "Mummy",

@@ -33,6 +33,7 @@ namespace CustomGuildChallenges
                 {
                     CustomChallengesEnabled = false,
                     CountKillsOnFarm = false,
+                    DebugMonsterKills = false,
                     Challenges = GetVanillaSlayerChallenges().ToList(),
                     GilNoRewardDialogue = Game1.content.LoadString("Characters\\Dialogue\\Gil:ComeBackLater"),
                     GilSleepingDialogue = Game1.content.LoadString("Characters\\Dialogue\\Gil:Snoring"),
@@ -103,17 +104,19 @@ namespace CustomGuildChallenges
 
             modHelper.ConsoleCommands.Add("player_giveitem", "", (command, arguments) =>
             {
-                if (arguments.Length != 2)
+                int itemStack = 1;
+
+                if (arguments.Length < 2)
                 {
-                    Monitor.Log("Usage: player_giveitem itemNumber", LogLevel.Warn);
+                    Monitor.Log("Usage: player_giveitem itemType itemNumber [itemStackCount - optional]", LogLevel.Warn);
                 }
-                else if (!int.TryParse(arguments[0], out int itemType) || !int.TryParse(arguments[1], out int itemNumber))
+                else if (!int.TryParse(arguments[0], out int itemType) || !int.TryParse(arguments[1], out int itemNumber) || (arguments.Length == 3 && !int.TryParse(arguments[2], out itemStack)))
                 {
-                    Monitor.Log("Invalid item number. Use an integer, like 50 or 100. Example: player_giveitem 100 ", LogLevel.Warn);
+                    Monitor.Log("Invalid item number. Use an integer, like 50 or 100. Example: player_giveitem 0 100 5", LogLevel.Warn);
                 }
                 else
                 {
-                    var item = challengeHelper.customAdventureGuild.CreateReward(itemType, itemNumber);
+                    var item = challengeHelper.customAdventureGuild.CreateReward(itemType, itemNumber, itemStack);
 
                     if (item == null)
                     {
@@ -133,6 +136,14 @@ namespace CustomGuildChallenges
                 {
                     Monitor.Log(item.Key + "'s killed: " + item.Value);
                 }
+            });
+
+            modHelper.ConsoleCommands.Add("toggle_monsterskilledinfo", "", (command, arguments) =>
+            {
+                Config.DebugMonsterKills = !Config.DebugMonsterKills;
+
+                string status = Config.DebugMonsterKills ? "Enabled" : "Disabled";
+                Monitor.Log("Monsters killed debug info " + status);
             });
 
             string log = Config.CustomChallengesEnabled ?
@@ -163,6 +174,20 @@ namespace CustomGuildChallenges
             if (location.IsFarm && (Config.CountKillsOnFarm || e.Name == Monsters.WildernessGolem))
             {
                 Game1.player.stats.monsterKilled(e.Name);
+
+                if (Config.DebugMonsterKills) Monitor.Log(e.Name + " killed for total of " + Game1.player.stats.getMonstersKilled(e.Name));
+            }
+            else if(location.Name == challengeHelper.BugLocationName)
+            {
+                string mutantName = "Mutant" + e.Name;
+                Game1.player.stats.monsterKilled(mutantName);
+                Game1.player.stats.specificMonstersKilled[e.Name]--;
+
+                if (Config.DebugMonsterKills) Monitor.Log(mutantName + " killed for total of " + Game1.player.stats.getMonstersKilled(mutantName));
+            }
+            else
+            {
+                if (Config.DebugMonsterKills) Monitor.Log(e.Name + " killed for total of " + Game1.player.stats.getMonstersKilled(e.Name));
             }
         }
 
@@ -205,8 +230,8 @@ namespace CustomGuildChallenges
                 ChallengeName = "Cave Insects",
                 RequiredKillCount = 125,
                 MonsterNames = { Monsters.Bug, Monsters.Grub, Monsters.Fly },
-                RewardType = (int)ItemType.MeleeWeapon,
-                RewardItemNumber = (int)MeleeWeapons.InsectHead
+                RewardType = (int)ItemType.Weapon,
+                RewardItemNumber = (int)Weapons.InsectHead
             };
 
             var duggyChallenge = new ChallengeInfo()

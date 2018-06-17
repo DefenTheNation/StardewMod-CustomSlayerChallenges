@@ -7,6 +7,7 @@ namespace CustomGuildChallenges
     {
         public bool CustomChallengesEnabled { get; set; }
         public bool CountKillsOnFarm { get; set; }
+        public bool DebugMonsterKills { get; set; }
         public string GilNoRewardDialogue { get; set; }
         public string GilSleepingDialogue { get; set; }
         public string GilSpecialGiftDialogue { get; set; }
