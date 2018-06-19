@@ -179,7 +179,7 @@ namespace CustomGuildChallenges
             }
             else if(location.Name == challengeHelper.BugLocationName)
             {
-                string mutantName = "Mutant" + e.Name;
+                string mutantName = "Mutant " + e.Name;
                 Game1.player.stats.monsterKilled(mutantName);
                 Game1.player.stats.specificMonstersKilled[e.Name]--;
 

@@ -48,6 +48,9 @@ If you want to use the challenges listed in the config instead of the vanilla ch
 By default, kills on the farm do not count toward the challenge goals. This mod enables kills for Wilderness Golems on farms because that's the only place
 they show up. If you want all other monster kills to count toward the goals too, change 'false' to 'true' (without the single quotes).
 
+"DebugMonsterKills"
+Displays each monster kill in the SMAPI console with total kills for that monster. Disabled by default.
+
 "GilNoRewardDialogue"
 This is what Gil says first time you talk to him in the guild and he has no rewards for you. You can make him as nice or as mean as you want.
 
@@ -115,6 +118,9 @@ The following values are valid for MonsterNames:
 
 		"Spiker"	NOTE: This is an unused monster
 		"Cat"		NOTE: This is an unused monster
+
+		"MutantGrub"	NOTE: This is added by the mod and is not part of the base game
+		"MutantFly"		NOTE: This is added by the mod and is not part of the base game
 
 Example: I want the Slimes challenge to include Green, Frost, and Red Slimes (a.k.a. Sludge), and Big Slimes.
 Result:
@@ -212,7 +218,7 @@ Special - 3:
         LargePack = 99		//NOTE: I don't know exactly how this works. It does not seem to affect
 							//		the inventory size.
 
-Rings - 6:
+Rings - 7:
 		SmallGlowRing = 516,
         GlowRing = 517,
         SmallMagnetRing = 518,
@@ -232,7 +238,7 @@ Rings - 6:
         EmeraldRing = 533,
         RubyRing = 534
 
-Hats - 7:
+Hats - 6:
 		CowboyHat = 0,
         BowlerHat = 1,
         TopHat = 2,

@@ -53,8 +53,8 @@ namespace CustomGuildChallenges
         public static string Cat { get; set; } = "Cat";
 
         // Added by this mod
-        public static string MutantGrub { get; set; } = "MutantGrub";
-        public static string MutantFly { get; set; } = "MutantFly";
+        public static string MutantGrub { get; set; } = "Mutant Grub";
+        public static string MutantFly { get; set; } = "Mutant Fly";
 
         public static IList<string> MonsterList = new List<string>()
         {

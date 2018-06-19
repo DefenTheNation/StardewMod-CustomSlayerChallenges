@@ -3,8 +3,8 @@
   "CountKillsOnFarm": true,
   "DebugMonsterKills": false,
   "GilNoRewardDialogue": "I ain't got nothin' for ya. Now get out there and get to swingin' that sword.",
-  "GilSleepingDialogue": "I'm tryin to sleep, ya rascal! *grumble grumble*",
-  "GilSpecialGiftDialogue": "Thanks for cleanin' up all those varmints. Figured you deserved somethin' extra special.",
+  "GilSleepingDialogue": "I'm tryin to sleep, ya hippie! *grumble grumble*",
+  "GilSpecialGiftDialogue": "Thanks for cleanin' up all those monsters. Figured you deserved somethin' extra special.",
   "Challenges": [
     {
       "ChallengeName": "Slimes",
@@ -33,7 +33,7 @@
     },
     {
       "ChallengeName": "Crabs",
-      "RequiredKillCount": 200,
+      "RequiredKillCount": 100,
       "RewardType": 0,
       "RewardItemNumber": 710,
       "RewardItemStack": 10,
@@ -69,7 +69,7 @@
       "ChallengeName": "Golems",
       "RequiredKillCount": 30,
       "RewardType": 2,
-      "RewardItemNumber": 50,
+      "RewardItemNumber": 6,
       "RewardItemStack": 1,
       "MonsterNames": [
         "Wilderness Golem",
@@ -87,17 +87,7 @@
       ]
     },
     {
-      "ChallengeName": "Dust Spirits I",
-      "RequiredKillCount": 250,
-      "RewardType": 0,
-      "RewardItemNumber": 382,
-      "RewardItemStack": 50,
-      "MonsterNames": [
-        "Dust Spirit"
-      ]
-    },
-    {
-      "ChallengeName": "Dust Spirits II",
+      "ChallengeName": "Dust Spirits",
       "RequiredKillCount": 500,
       "RewardType": 7,
       "RewardItemNumber": 526,
@@ -151,12 +141,12 @@
     {
       "ChallengeName": "Mutant Insects",
       "RequiredKillCount": 200,
-      "RewardType": 2,
+      "RewardType": 7,
       "RewardItemNumber": 527,
       "RewardItemStack": 1,
       "MonsterNames": [
-        "MutantGrub",
-        "MutantFly"
+        "Mutant Grub",
+        "Mutant Fly"
       ]
     },
     {
