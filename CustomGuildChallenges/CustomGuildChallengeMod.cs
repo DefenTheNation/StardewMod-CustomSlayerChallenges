@@ -71,7 +71,7 @@ namespace CustomGuildChallenges
             challengeHelper.customAdventureGuild.GilSpecialRewardText = Config.GilSpecialGiftDialogue;
             challengeHelper.MonsterKilled += Events_MonsterKilled;      
 
-            modHelper.ConsoleCommands.Add("player_setkills", "", (command, arguments) =>
+            modHelper.ConsoleCommands.Add("player_setkills", "Update kill count for a monster type", (command, arguments) =>
             {
                 if (arguments.Length != 2)
                 {
@@ -90,7 +90,7 @@ namespace CustomGuildChallenges
                 }
             });
 
-            modHelper.ConsoleCommands.Add("player_getkills", "", (command, arguments) =>
+            modHelper.ConsoleCommands.Add("player_getkills", "Get kill count for monster type", (command, arguments) =>
             {
                 if(arguments.Length == 0)
                 {
@@ -102,7 +102,7 @@ namespace CustomGuildChallenges
                 }               
             });
 
-            modHelper.ConsoleCommands.Add("player_giveitem", "", (command, arguments) =>
+            modHelper.ConsoleCommands.Add("player_giveitem", "See mod README for item number info", (command, arguments) =>
             {
                 int itemStack = 1;
 
@@ -130,7 +130,7 @@ namespace CustomGuildChallenges
                 }
             });
 
-            modHelper.ConsoleCommands.Add("player_getallkills", "", (command, arguments) =>
+            modHelper.ConsoleCommands.Add("player_getallkills", "Display all kills for all monsters", (command, arguments) =>
             {
                 foreach(var item in Game1.player.stats.specificMonstersKilled)
                 {
@@ -138,7 +138,7 @@ namespace CustomGuildChallenges
                 }
             });
 
-            modHelper.ConsoleCommands.Add("toggle_monsterskilledinfo", "", (command, arguments) =>
+            modHelper.ConsoleCommands.Add("toggle_monsterskilledinfo", "Turn debug statement of monster kill on or off", (command, arguments) =>
             {
                 Config.DebugMonsterKills = !Config.DebugMonsterKills;
 
@@ -147,7 +147,7 @@ namespace CustomGuildChallenges
             });
 
             string log = Config.CustomChallengesEnabled ?
-                "Initialized (" + Config.Challenges.Count + " custom challenges uploaded)" :
+                "Initialized (" + Config.Challenges.Count + " custom challenges loaded)" :
                 "Initialized (Vanilla challenges loaded)";
 
             Monitor.Log(log, LogLevel.Debug);
@@ -256,7 +256,7 @@ namespace CustomGuildChallenges
             {
                 ChallengeName = "Cave Insects",
                 RequiredKillCount = 125,
-                MonsterNames = { Monsters.Bug, Monsters.Grub, Monsters.Fly },
+                MonsterNames = { Monsters.Bug, Monsters.Grub, Monsters.Fly, Monsters.MutantGrub, Monsters.MutantFly },
                 RewardType = (int)ItemType.Weapon,
                 RewardItemNumber = (int)Weapons.InsectHead
             };
