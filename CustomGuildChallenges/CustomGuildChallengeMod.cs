@@ -171,23 +171,50 @@ namespace CustomGuildChallenges
         {
             if (!(sender is GameLocation location)) return;
 
-            if (location.IsFarm && (Config.CountKillsOnFarm || e.Name == Monsters.WildernessGolem))
+            string monsterName = e.Name;
+            if (location.IsFarm && (Config.CountKillsOnFarm || monsterName == Monsters.WildernessGolem))
             {
-                Game1.player.stats.monsterKilled(e.Name);
-
-                if (Config.DebugMonsterKills) Monitor.Log(e.Name + " killed for total of " + Game1.player.stats.getMonstersKilled(e.Name));
+                Game1.player.stats.monsterKilled(monsterName);               
             }
             else if(location.Name == challengeHelper.BugLocationName)
             {
-                string mutantName = "Mutant " + e.Name;
+                string mutantName = "Mutant " + monsterName;
                 Game1.player.stats.monsterKilled(mutantName);
-                Game1.player.stats.specificMonstersKilled[e.Name]--;
-
-                if (Config.DebugMonsterKills) Monitor.Log(mutantName + " killed for total of " + Game1.player.stats.getMonstersKilled(mutantName));
+                Game1.player.stats.specificMonstersKilled[monsterName]--;
+                monsterName = mutantName;
             }
-            else
+
+            if (Config.DebugMonsterKills) Monitor.Log(monsterName + " killed for total of " + Game1.player.stats.getMonstersKilled(e.Name));
+
+            NotifyIfChallengeComplete(monsterName);
+        }
+
+        /// <summary>
+        ///     Display message to see Gil if the challenge just completed
+        /// </summary>
+        private void NotifyIfChallengeComplete(string monsterKilled)
+        {
+            bool hasMonster;
+            int kills;
+
+            foreach (var challenge in challengeHelper.customAdventureGuild.ChallengeList)
             {
-                if (Config.DebugMonsterKills) Monitor.Log(e.Name + " killed for total of " + Game1.player.stats.getMonstersKilled(e.Name));
+                if (challenge.CollectedReward) continue;
+
+                kills = 0;
+                hasMonster = false;
+
+                foreach (var monsterName in challenge.Info.MonsterNames)
+                {
+                    kills += Game1.stats.getMonstersKilled(monsterName);
+                    if (monsterName == monsterKilled) hasMonster = true;
+                }
+
+                if (kills == challenge.Info.RequiredKillCount && hasMonster)
+                {
+                    Game1.showGlobalMessage(Game1.content.LoadString("Strings\\StringsFromCSFiles:Stats.cs.5129"));
+                    break;
+                }
             }
         }
 
