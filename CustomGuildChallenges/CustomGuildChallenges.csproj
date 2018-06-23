@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="API\ConfigChallengeHelper.cs" />
     <Compile Include="API\ICustomChallenges.cs" />
+    <Compile Include="API\ISaveAnywhereAPI.cs" />
     <Compile Include="Config\ChallengeInfo.cs" />
     <Compile Include="Config\ChallengeSave.cs" />
     <Compile Include="CustomGuildChallengeMod.cs" />

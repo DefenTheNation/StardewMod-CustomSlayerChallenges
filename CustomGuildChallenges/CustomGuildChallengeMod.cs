@@ -1,8 +1,10 @@
 ﻿using CustomGuildChallenges.API;
 using StardewModdingAPI;
+using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Locations;
 using StardewValley.Monsters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,6 +14,7 @@ namespace CustomGuildChallenges
     public class CustomGuildChallengeMod : Mod
     {
         protected IModHelper modHelper;
+        protected ISaveAnywhereAPI saveAnywhereAPI;
         protected AdventureGuild adventureGuild;
         protected ConfigChallengeHelper challengeHelper;
 
@@ -63,12 +66,20 @@ namespace CustomGuildChallenges
                 // TODO: Validate items on startup
                 
             }
-           
+            
             challengeHelper = new ConfigChallengeHelper(new CustomAdventureGuild(Config.Challenges, helper));
             challengeHelper.customAdventureGuild.GilNoRewardsText = Config.GilNoRewardDialogue;
             challengeHelper.customAdventureGuild.GilNappingText = Config.GilSleepingDialogue;
             challengeHelper.customAdventureGuild.GilSpecialRewardText = Config.GilSpecialGiftDialogue;
-            challengeHelper.MonsterKilled += Events_MonsterKilled;      
+            challengeHelper.MonsterKilled += Events_MonsterKilled;
+
+            SaveEvents.BeforeSave += challengeHelper.customAdventureGuild.PresaveData;
+            SaveEvents.AfterSave += challengeHelper.customAdventureGuild.InjectGuild;
+            SaveEvents.AfterLoad += challengeHelper.customAdventureGuild.InjectGuild;
+            SaveEvents.AfterCreate += challengeHelper.customAdventureGuild.InjectGuild;
+
+            SaveEvents.AfterLoad += ModCompatibilityCheck;
+            SaveEvents.AfterCreate += ModCompatibilityCheck;            
 
             modHelper.ConsoleCommands.Add("player_setkills", "", (command, arguments) =>
             {
@@ -149,6 +160,22 @@ namespace CustomGuildChallenges
         public override object GetApi()
         {
             return challengeHelper;
+        }
+
+        private void ModCompatibilityCheck(object sender, EventArgs e)
+        {
+            // Integrate: Save Anywhere
+            if(Helper.ModRegistry.IsLoaded("Omegasis.SaveAnywhere"))
+            {
+                saveAnywhereAPI = Helper.ModRegistry.GetApi<ISaveAnywhereAPI>("Omegasis.SaveAnywhere");
+
+                saveAnywhereAPI.BeforeSave += challengeHelper.customAdventureGuild.PresaveData;
+                saveAnywhereAPI.AfterSave += challengeHelper.customAdventureGuild.InjectGuild;
+                saveAnywhereAPI.AfterLoad += challengeHelper.customAdventureGuild.InjectGuild;
+            }
+            
+            SaveEvents.AfterCreate -= ModCompatibilityCheck;
+            SaveEvents.AfterLoad -= ModCompatibilityCheck;
         }
         
         /// <summary>

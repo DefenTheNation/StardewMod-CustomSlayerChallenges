@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
-using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Locations;
 using StardewValley.Menus;
@@ -10,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Xml.Serialization;
 using xTile.Dimensions;
 
 namespace CustomGuildChallenges
@@ -81,13 +79,6 @@ namespace CustomGuildChallenges
         protected void init()
         {
             addCharacter(new NPC(new AnimatedSprite("Characters\\Marlon", 0, 16, 32), new Vector2(320f, 704f), "AdventureGuild", 2, "Marlon", false, null, Game1.content.Load<Texture2D>("Portraits\\Marlon")));
-
-            
-
-            SaveEvents.BeforeSave += presaveData;
-            SaveEvents.AfterSave += injectGuild;
-            SaveEvents.AfterLoad += injectGuild;
-            SaveEvents.AfterCreate += injectGuild;
         }
 
         #endregion
@@ -302,7 +293,7 @@ namespace CustomGuildChallenges
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void presaveData(object sender, EventArgs e)
+        public void PresaveData(object sender, EventArgs e)
         {
             string saveDataPath = Path.Combine("saveData", Constants.SaveFolderName + ".json");
             var saveData = new SaveData();
@@ -336,7 +327,7 @@ namespace CustomGuildChallenges
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        protected virtual void injectGuild(object sender, EventArgs e)
+        public virtual void InjectGuild(object sender, EventArgs e)
         {
             string saveDataPath = Path.Combine("saveData", Constants.SaveFolderName + ".json");
             var saveData = modHelper.ReadJsonFile<SaveData>(saveDataPath) ?? new SaveData();
