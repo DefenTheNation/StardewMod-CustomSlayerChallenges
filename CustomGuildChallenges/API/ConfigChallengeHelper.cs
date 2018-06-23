@@ -19,7 +19,7 @@ namespace CustomGuildChallenges.API
         internal readonly CustomAdventureGuild customAdventureGuild;
 
         /// <summary>
-        ///     Is invoked each time a monster dies
+        ///     Is invoked each time a monster is killed
         /// </summary>
         public event EventHandler<Monster> MonsterKilled;
 
@@ -43,7 +43,7 @@ namespace CustomGuildChallenges.API
         /// <param name="rewardItemType"></param>
         /// <param name="rewardItemNumber"></param>
         /// <param name="monsterNames"></param>
-        public void AddChallenge(string challengeName, int killCount, int rewardItemType, int rewardItemNumber, IList<string> monsterNames)
+        public void AddChallenge(string challengeName, int killCount, int rewardItemType, int rewardItemNumber, int rewardItemStack, IList<string> monsterNames)
         {
             var challenge = new SlayerChallenge()
             {
@@ -121,12 +121,15 @@ namespace CustomGuildChallenges.API
 
         /// <summary>
         ///     Fires the MonsterKilled event if the removed NPC is a monster and has 0 or less health
+        ///     or its a grub that doesn't have a fixed health value of -500 for when it transforms into a fly
         /// </summary>
         /// <param name="value"></param>
         private void Characters_OnValueRemoved(NPC value)
         {
-            if (value is Monster monster && monster.Health <= 0)
-            {
+            // Grub at -500 health means it transformed
+            // This is a hacky way to detect transformation, but the alternative is reflection
+            if (value is Monster monster && monster.Health <= 0 && (!(value is Grub grub) || grub.Health != -500))
+            {                
                 MonsterKilled.Invoke(Game1.currentLocation, monster);
             }
         }

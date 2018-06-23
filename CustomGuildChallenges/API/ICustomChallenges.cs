@@ -18,14 +18,15 @@ namespace CustomGuildChallenges.API
         /// <param name="specialRewardDialogue"></param>
         void SetGilDialogue(string initialNoRewardDialogue, string secondNoRewardDialogue, string specialRewardDialogue);
         /// <summary>
-        ///     Add a challenge to the challenge list
+        ///     Add challenge to the list
         /// </summary>
         /// <param name="challengeName"></param>
         /// <param name="requiredKillCount"></param>
         /// <param name="rewardItemType"></param>
         /// <param name="rewardItemNumber"></param>
+        /// <param name="rewardItemStack"></param>
         /// <param name="monsterNames"></param>
-        void AddChallenge(string challengeName, int requiredKillCount, int rewardItemType, int rewardItemNumber, IList<string> monsterNames);
+        void AddChallenge(string challengeName, int requiredKillCount, int rewardItemType, int rewardItemNumber, int rewardItemStack, IList<string> monsterNames);
         /// <summary>
         ///     Remove a challenge from the list
         /// </summary>
