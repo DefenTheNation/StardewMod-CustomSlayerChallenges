@@ -17,6 +17,7 @@ namespace CustomGuildChallenges
         protected ISaveAnywhereAPI saveAnywhereAPI;
         protected AdventureGuild adventureGuild;
         protected ConfigChallengeHelper challengeHelper;
+        protected IList<ChallengeInfo> VanillaChallenges;
 
         public ModConfig Config { get; set; }
 
@@ -27,10 +28,12 @@ namespace CustomGuildChallenges
         public override void Entry(IModHelper helper)
         {
             modHelper = helper;
+            VanillaChallenges = GetVanillaSlayerChallenges();
+
             Config = helper.ReadConfig<ModConfig>();
 
             // Create config file using vanilla challenges
-            if(Config == null || Config.Challenges == null || Config.Challenges.Count == 0)
+            if (Config == null || Config.Challenges == null || Config.Challenges.Count == 0)
             {
                 Config = new ModConfig()
                 {
@@ -67,7 +70,7 @@ namespace CustomGuildChallenges
                 // TODO: Validate items on startup
                 
             }
-            
+
             challengeHelper = new ConfigChallengeHelper(new CustomAdventureGuild(Config.Challenges, helper));
             challengeHelper.customAdventureGuild.GilNoRewardsText = Config.GilNoRewardDialogue;
             challengeHelper.customAdventureGuild.GilNappingText = Config.GilSleepingDialogue;
@@ -237,14 +240,33 @@ namespace CustomGuildChallenges
                     if (monsterName == monsterKilled) hasMonster = true;
                 }
 
-                if (kills == challenge.Info.RequiredKillCount && hasMonster)
+                if (hasMonster && kills == challenge.Info.RequiredKillCount)
                 {
-                    Game1.showGlobalMessage(Game1.content.LoadString("Strings\\StringsFromCSFiles:Stats.cs.5129"));
+                    string message = Game1.content.LoadString("Strings\\StringsFromCSFiles:Stats.cs.5129");
+                    if (!isVanillaChallenge(challenge.Info)) Game1.showGlobalMessage(message);
                     break;
                 }
             }
         }
 
+        /// <summary>
+        ///     Check to see if challenge is vanilla
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        private bool isVanillaChallenge(ChallengeInfo info)
+        {
+            foreach(var challenge in VanillaChallenges)
+            {
+                if(challenge.RequiredKillCount == info.RequiredKillCount && challenge.ChallengeName == info.ChallengeName 
+                    && challenge.MonsterNames.All(x => info.MonsterNames.Any(y => x == y)) && info.MonsterNames.All(x => challenge.MonsterNames.Any(y => y == x)))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
        
         /// <summary>
         ///     Returns a list of the vanilla challenges

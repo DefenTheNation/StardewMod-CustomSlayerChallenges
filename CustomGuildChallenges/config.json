@@ -27,8 +27,7 @@
       "MonsterNames": [
         "Bat",
         "Frost Bat",
-        "Lava Bat",
-        "Iridium Bat"
+        "Lava Bat"
       ]
     },
     {
@@ -52,7 +51,9 @@
       "MonsterNames": [
         "Bug",
         "Grub",
-        "Fly"
+        "Fly",
+        "Mutant Grub",
+        "Mutant Fly"
       ]
     },
     {
