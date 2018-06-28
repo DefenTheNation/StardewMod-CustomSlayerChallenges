@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CustomGuildChallenges.API;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
@@ -7,6 +8,7 @@ using StardewValley.Menus;
 using StardewValley.Objects;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using xTile.Dimensions;
@@ -22,43 +24,13 @@ namespace CustomGuildChallenges
         public const string StandardMapPath = "Maps\\AdventureGuild";
         public const string StandardMapName = "AdventureGuild";
 
-        public string MapName { get; set; }
-        public string MapPath { get; set; }
-        public string GilNoRewardsText { get; set; } = "";
-        public string GilNappingText { get; set; } = "";
-        public string GilSpecialRewardText { get; set; } = "";
-
         protected bool talkedToGil;
-        protected readonly AdventureGuild adventureGuild;        
         protected readonly NPC Gil = new NPC(null, new Vector2(-1000f, -1000f), "AdventureGuild", 2, "Gil", false, null, Game1.content.Load<Texture2D>("Portraits\\Gil"));
-
-        protected IModHelper modHelper;
-        public IList<SlayerChallenge> ChallengeList { get; set; }
 
         #region Constructors
 
         public CustomAdventureGuild() : base(StandardMapPath, StandardMapName)
         {
-
-        }
-
-        /// <summary>
-        ///     Loads custom slayer challenge list with vanilla map path and name
-        /// </summary>
-        /// <param name="customChallengeList"></param>
-        public CustomAdventureGuild(IList<ChallengeInfo> customChallengeList, IModHelper helper) : base(StandardMapPath, StandardMapName)
-        {
-            var challenges = new List<SlayerChallenge>();
-            foreach (var info in customChallengeList) challenges.Add(new SlayerChallenge() { Info = info });
-
-            MapName = StandardMapName;
-            MapPath = StandardMapPath;
-
-            ChallengeList = challenges;
-            modHelper = helper;
-            adventureGuild = new AdventureGuild(StandardMapPath, StandardMapName);
-
-            init();
         }
 
         /// <summary>
@@ -67,16 +39,21 @@ namespace CustomGuildChallenges
         /// <param name="map"></param>
         /// <param name="name"></param>
         /// <param name="customChallengeList"></param>
-        public CustomAdventureGuild(IList<SlayerChallenge> customChallengeList, IModHelper helper, string map, string name) : base(map, name)
+        public CustomAdventureGuild(string map, string name) : base(map, name)
         {
-            ChallengeList = customChallengeList;
-            modHelper = helper;
-            adventureGuild = new AdventureGuild(StandardMapPath, StandardMapName);
-
-            init();
         }
 
-        protected void init()
+        internal bool HasMarlon()
+        {
+            foreach(var character in characters)
+            {
+                if (character.Name == "Marlon") return true;
+            }
+
+            return false;
+        }
+
+        internal void AddMarlon()
         {
             addCharacter(new NPC(new AnimatedSprite("Characters\\Marlon", 0, 16, 32), new Vector2(320f, 704f), "AdventureGuild", 2, "Marlon", false, null, Game1.content.Load<Texture2D>("Portraits\\Marlon")));
         }
@@ -132,11 +109,12 @@ namespace CustomGuildChallenges
         {
             base.resetLocalState();
             talkedToGil = false;
+        }
 
-            if (!Game1.player.mailReceived.Contains("guildMember"))
-            {
-                Game1.player.mailReceived.Add("guildMember");
-            }
+        protected override void resetSharedState()
+        {
+            base.resetSharedState();
+            //Debug.WriteLine(characters.Count + " characters found.");
         }
 
         /// <summary>
@@ -152,12 +130,12 @@ namespace CustomGuildChallenges
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append(Game1.content.LoadString("Strings\\Locations:AdventureGuild_KillList_Header").Replace('\n', '^') + "^");
 
-            foreach(var challenge in ChallengeList)
+            foreach(var challenge in ConfigChallengeHelper.ChallengeList)
             {
                 int kills = 0;
                 foreach(var monsterName in challenge.Info.MonsterNames)
                 {
-                    kills += Game1.stats.getMonstersKilled(monsterName);
+                    kills += Game1.player.stats.getMonstersKilled(monsterName);
                 }
 
                 stringBuilder.Append(KillListLine(challenge.Info.ChallengeName, kills, challenge.Info.RequiredKillCount));
@@ -177,14 +155,14 @@ namespace CustomGuildChallenges
             List<SlayerChallenge> completedChallenges = new List<SlayerChallenge>();
 
             // Check for available rewards
-            foreach(var challenge in ChallengeList)
+            foreach(var challenge in ConfigChallengeHelper.ChallengeList)
             {
                 if (challenge.CollectedReward) continue;
 
                 int kills = 0;
                 foreach (var monsterName in challenge.Info.MonsterNames)
                 {
-                    kills += Game1.stats.getMonstersKilled(monsterName);
+                    kills += Game1.player.stats.getMonstersKilled(monsterName);
                 }
 
                 if(kills >= challenge.Info.RequiredKillCount)
@@ -199,7 +177,7 @@ namespace CustomGuildChallenges
                     }
                     else if(challenge.Info.RewardType == 0 && challenge.Info.RewardItemNumber == 434)   // Stardrop award
                     {
-                        Game1.drawDialogue(Gil, GilSpecialRewardText);
+                        Game1.drawDialogue(Gil, ConfigChallengeHelper.Config.GilSpecialGiftDialogue);
 
                         Game1.player.holdUpItemThenMessage(rewardItem, true);
                         specialItemsCollected++;
@@ -211,7 +189,7 @@ namespace CustomGuildChallenges
                     // Add special section for special item
                     else if (rewardItem is SpecialItem specialItem)
                     {
-                        Game1.drawDialogue(Gil, GilSpecialRewardText);
+                        Game1.drawDialogue(Gil, ConfigChallengeHelper.Config.GilSpecialGiftDialogue);
 
                         Game1.player.holdUpItemThenMessage(specialItem, true);
                         specialItem.actionWhenReceived(Game1.player);
@@ -257,11 +235,11 @@ namespace CustomGuildChallenges
             }
             else if(talkedToGil)
             {
-                Game1.drawDialogue(Gil, GilNappingText);
+                Game1.drawDialogue(Gil, ConfigChallengeHelper.Config.GilSleepingDialogue);
             }
             else
             {
-                Game1.drawDialogue(Gil, GilNoRewardsText);
+                Game1.drawDialogue(Gil, ConfigChallengeHelper.Config.GilNoRewardDialogue);
                 talkedToGil = true;
             }
         }
@@ -290,73 +268,6 @@ namespace CustomGuildChallenges
             }
         }
 
-        /// <summary>
-        ///     Saves the status of challenges and switches the
-        ///     CustomAdventureGuild with AdventureGuild to prevent
-        ///     crashing the save process
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public void PresaveData(object sender, EventArgs e)
-        {
-            string saveDataPath = Path.Combine("saveData", Constants.SaveFolderName + ".json");
-            var saveData = new SaveData();
-
-            foreach (var slayerChallenge in ChallengeList)
-            {
-                var save = new ChallengeSave()
-                {
-                    ChallengeName = slayerChallenge.Info.ChallengeName,
-                    Collected = slayerChallenge.CollectedReward
-                };
-
-                saveData.Challenges.Add(save);
-            }
-
-            modHelper.WriteJsonFile(saveDataPath, saveData);
-
-            for (int i = 0; i < Game1.locations.Count; i++)
-            {
-                if (Game1.locations[i].Name == MapName)
-                {
-                    Game1.locations.RemoveAt(i);
-                    Game1.locations.Add(adventureGuild);
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Read the save data file and replace the AdventureGuild with
-        ///     CustomAdventureGuild
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public virtual void InjectGuild(object sender, EventArgs e)
-        {
-            string saveDataPath = Path.Combine("saveData", Constants.SaveFolderName + ".json");
-            var saveData = modHelper.ReadJsonFile<SaveData>(saveDataPath) ?? new SaveData();
-
-            foreach (var savedChallenge in saveData.Challenges)
-            {
-                foreach (var slayerChallenge in ChallengeList)
-                {
-                    if (savedChallenge.ChallengeName == slayerChallenge.Info.ChallengeName)
-                    {
-                        slayerChallenge.CollectedReward = savedChallenge.Collected;
-                        break;
-                    }
-                }
-            }
-
-            // Kill old guild, replace with new guild
-            for (int i = 0; i < Game1.locations.Count; i++)
-            {
-                if (Game1.locations[i].Name == StandardMapName)
-                {
-                    Game1.locations.RemoveAt(i);
-                    Game1.locations.Add(this);
-                }
-            }
-        }
+        
     }
 }

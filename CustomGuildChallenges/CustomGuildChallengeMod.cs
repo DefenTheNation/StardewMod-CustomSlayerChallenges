@@ -17,7 +17,8 @@ namespace CustomGuildChallenges
         protected ISaveAnywhereAPI saveAnywhereAPI;
         protected AdventureGuild adventureGuild;
         protected ConfigChallengeHelper challengeHelper;
-        protected IList<ChallengeInfo> VanillaChallenges;
+
+        internal static IList<ChallengeInfo> VanillaChallenges;
 
         public ModConfig Config { get; set; }
 
@@ -71,17 +72,8 @@ namespace CustomGuildChallenges
                 
             }
 
-            challengeHelper = new ConfigChallengeHelper(new CustomAdventureGuild(Config.Challenges, helper));
-            challengeHelper.customAdventureGuild.GilNoRewardsText = Config.GilNoRewardDialogue;
-            challengeHelper.customAdventureGuild.GilNappingText = Config.GilSleepingDialogue;
-            challengeHelper.customAdventureGuild.GilSpecialRewardText = Config.GilSpecialGiftDialogue;
-            challengeHelper.MonsterKilled += Events_MonsterKilled;
-
-            SaveEvents.BeforeSave += challengeHelper.customAdventureGuild.PresaveData;
-            SaveEvents.AfterSave += challengeHelper.customAdventureGuild.InjectGuild;
-            SaveEvents.AfterLoad += challengeHelper.customAdventureGuild.InjectGuild;
-            SaveEvents.AfterCreate += challengeHelper.customAdventureGuild.InjectGuild;
-
+            challengeHelper = new ConfigChallengeHelper(helper, Config);
+            
             SaveEvents.AfterLoad += ModCompatibilityCheck;
             SaveEvents.AfterCreate += ModCompatibilityCheck;            
 
@@ -97,8 +89,8 @@ namespace CustomGuildChallenges
                 }
                 else
                 {
-                    int before = Game1.stats.getMonstersKilled(arguments[0]);
-                    Game1.stats.specificMonstersKilled[arguments[0]] = killCount;
+                    int before = Game1.player.stats.getMonstersKilled(arguments[0]);
+                    Game1.player.stats.specificMonstersKilled[arguments[0]] = killCount;
 
                     Monitor.Log(arguments[0] + " kills changed from " + before + " to " + killCount, LogLevel.Info);
                 }
@@ -112,7 +104,7 @@ namespace CustomGuildChallenges
                 }
                 else
                 {
-                    Monitor.Log(arguments[0] + "'s killed: " + Game1.stats.getMonstersKilled(arguments[0]), LogLevel.Info);
+                    Monitor.Log(arguments[0] + "'s killed: " + Game1.player.stats.getMonstersKilled(arguments[0]), LogLevel.Info);
                 }               
             });
 
@@ -183,90 +175,16 @@ namespace CustomGuildChallenges
             {
                 saveAnywhereAPI = Helper.ModRegistry.GetApi<ISaveAnywhereAPI>("Omegasis.SaveAnywhere");
 
-                saveAnywhereAPI.BeforeSave += challengeHelper.customAdventureGuild.PresaveData;
-                saveAnywhereAPI.AfterSave += challengeHelper.customAdventureGuild.InjectGuild;
-                saveAnywhereAPI.AfterLoad += challengeHelper.customAdventureGuild.InjectGuild;
+                saveAnywhereAPI.BeforeSave += challengeHelper.PresaveData;
+                saveAnywhereAPI.AfterSave += challengeHelper.InjectGuild;
+                saveAnywhereAPI.AfterLoad += challengeHelper.InjectGuild;
             }
             
             SaveEvents.AfterCreate -= ModCompatibilityCheck;
             SaveEvents.AfterLoad -= ModCompatibilityCheck;
         }
         
-        /// <summary>
-        ///     Adds kills for monsters on the farm (if enabled) and Wilderness Golems
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Events_MonsterKilled(object sender, Monster e)
-        {
-            if (!(sender is GameLocation location)) return;
-
-            string monsterName = e.Name;
-            if (location.IsFarm && (Config.CountKillsOnFarm || monsterName == Monsters.WildernessGolem))
-            {
-                Game1.player.stats.monsterKilled(monsterName);               
-            }
-            else if(location.Name == challengeHelper.BugLocationName)
-            {
-                string mutantName = "Mutant " + monsterName;
-                Game1.player.stats.monsterKilled(mutantName);
-                Game1.player.stats.specificMonstersKilled[monsterName]--;
-                monsterName = mutantName;
-            }
-
-            if (Config.DebugMonsterKills) Monitor.Log(monsterName + " killed for total of " + Game1.player.stats.getMonstersKilled(e.Name));
-
-            NotifyIfChallengeComplete(monsterName);
-        }
-
-        /// <summary>
-        ///     Display message to see Gil if the challenge just completed
-        /// </summary>
-        private void NotifyIfChallengeComplete(string monsterKilled)
-        {
-            bool hasMonster;
-            int kills;
-
-            foreach (var challenge in challengeHelper.customAdventureGuild.ChallengeList)
-            {
-                if (challenge.CollectedReward) continue;
-
-                kills = 0;
-                hasMonster = false;
-
-                foreach (var monsterName in challenge.Info.MonsterNames)
-                {
-                    kills += Game1.stats.getMonstersKilled(monsterName);
-                    if (monsterName == monsterKilled) hasMonster = true;
-                }
-
-                if (hasMonster && kills == challenge.Info.RequiredKillCount)
-                {
-                    string message = Game1.content.LoadString("Strings\\StringsFromCSFiles:Stats.cs.5129");
-                    if (!isVanillaChallenge(challenge.Info)) Game1.showGlobalMessage(message);
-                    break;
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Check to see if challenge is vanilla
-        /// </summary>
-        /// <param name="info"></param>
-        /// <returns></returns>
-        private bool isVanillaChallenge(ChallengeInfo info)
-        {
-            foreach(var challenge in VanillaChallenges)
-            {
-                if(challenge.RequiredKillCount == info.RequiredKillCount && challenge.ChallengeName == info.ChallengeName 
-                    && challenge.MonsterNames.All(x => info.MonsterNames.Any(y => x == y)) && info.MonsterNames.All(x => challenge.MonsterNames.Any(y => y == x)))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
+        
        
         /// <summary>
         ///     Returns a list of the vanilla challenges

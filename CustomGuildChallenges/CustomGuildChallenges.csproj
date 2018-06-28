@@ -72,7 +72,7 @@
     <Compile Include="Monsters.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Config\SaveData.cs" />
-    <Compile Include="SlayerChallenge.cs" />
+    <Compile Include="Config\SlayerChallenge.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="config.json">
