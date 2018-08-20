@@ -287,7 +287,7 @@ namespace CustomGuildChallenges.API
                 if (hasMonster && kills == challenge.Info.RequiredKillCount)
                 {
                     string message = Game1.content.LoadString("Strings\\StringsFromCSFiles:Stats.cs.5129");
-                    if (!isVanillaChallenge(challenge.Info)) Game1.showGlobalMessage(message);
+                    if (!IsVanillaChallenge(challenge.Info)) Game1.showGlobalMessage(message);
                     break;
                 }
             }
@@ -298,7 +298,7 @@ namespace CustomGuildChallenges.API
         /// </summary>
         /// <param name="info"></param>
         /// <returns></returns>
-        private bool isVanillaChallenge(ChallengeInfo info)
+        private bool IsVanillaChallenge(ChallengeInfo info)
         {
             foreach (var challenge in CustomGuildChallengeMod.VanillaChallenges)
             {

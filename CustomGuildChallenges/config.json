@@ -173,8 +173,8 @@
     {
       "ChallengeName": "Valley Monsters",
       "RequiredKillCount": 4000,
-      "RewardType": 3,
-      "RewardItemNumber": 3,
+      "RewardType": 0,
+      "RewardItemNumber": 434,
       "RewardItemStack": 1,
       "MonsterNames": [
         "Green Slime",
