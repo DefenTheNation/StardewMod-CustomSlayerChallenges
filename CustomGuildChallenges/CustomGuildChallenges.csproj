@@ -70,7 +70,6 @@
     <Compile Include="CustomAdventureGuild.cs" />
     <Compile Include="Config\ModConfig.cs" />
     <Compile Include="ItemCodes.cs" />
-    <Compile Include="MonsterKilledMessage.cs" />
     <Compile Include="Monsters.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Config\SaveData.cs" />
