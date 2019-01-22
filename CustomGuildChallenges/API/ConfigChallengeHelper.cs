@@ -39,7 +39,12 @@ namespace CustomGuildChallenges.API
         /// <summary>
         ///     SMAPI API - used for saving and loading JSON files
         /// </summary>
-        internal readonly IModHelper modHelper;       
+        internal readonly IModHelper Helper;
+
+        /// <summary>
+        ///     SMAPI Log Utility
+        /// </summary>
+        internal readonly IMonitor Monitor;
 
         /// <summary>
         ///     Is invoked each time a monster is killed
@@ -50,9 +55,10 @@ namespace CustomGuildChallenges.API
         ///     Creates guild and sets up events
         /// </summary>
         /// <param name="guild"></param>
-        public ConfigChallengeHelper(IModHelper helper, ModConfig config)
+        public ConfigChallengeHelper(IModHelper helper, ModConfig config, IMonitor monitor)
         {
-            modHelper = helper;
+            Helper = helper;
+            Monitor = monitor;
             Config = config;
 
             ChallengeList = new List<SlayerChallenge>();               
@@ -64,16 +70,18 @@ namespace CustomGuildChallenges.API
                 foreach (var info in config.Challenges) ChallengeList.Add(new SlayerChallenge() { Info = info });
             }
             
-            SaveEvents.AfterCreate += SetupMonsterKilledEvent;
-            SaveEvents.AfterLoad += SetupMonsterKilledEvent;
+            helper.Events.GameLoop.SaveCreated += SetupMonsterKilledEvent;
+            helper.Events.GameLoop.SaveLoaded += SetupMonsterKilledEvent;
             
-            SaveEvents.BeforeSave += PresaveData;
-            SaveEvents.AfterSave += InjectGuild;
-            SaveEvents.AfterLoad += InjectGuild;
-            SaveEvents.AfterCreate += InjectGuild;
+            helper.Events.GameLoop.Saving += PresaveData;
+            helper.Events.GameLoop.Saved += InjectGuild;
+            helper.Events.GameLoop.SaveLoaded += InjectGuild;
+            helper.Events.GameLoop.SaveCreated += InjectGuild;
 
             MonsterKilled += Events_MonsterKilled;
         }
+
+        
 
         /// <summary>
         ///     Add a challenge for the player to complete. The global config will not be updated.
@@ -139,15 +147,8 @@ namespace CustomGuildChallenges.API
         internal void SetupMonsterKilledEvent(object sender, EventArgs e)
         {
             // Inject into all mines
-            MineEvents.MineLevelChanged += MineEvents_MineLevelChanged;
-            // Inject into all locations that spawn monsters that are not in the mines
-            foreach (var location in Game1.locations)
-            {
-                if (location.Name == FarmLocationName || location.Name == BugLocationName)
-                {
-                    location.characters.OnValueRemoved += Characters_OnValueRemoved;
-                }
-            }
+            Helper.Events.Player.Warped -= Player_Warped;
+            Helper.Events.Player.Warped += Player_Warped;
         }
 
         /// <summary>
@@ -155,9 +156,10 @@ namespace CustomGuildChallenges.API
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void MineEvents_MineLevelChanged(object sender, EventArgsMineLevelChanged e)
+        private void Player_Warped(object sender, WarpedEventArgs e)
         {
-            if (Game1.mine != null) Game1.mine.characters.OnValueRemoved += Characters_OnValueRemoved;
+            e.NewLocation.characters.OnValueRemoved -= Characters_OnValueRemoved;
+            e.NewLocation.characters.OnValueRemoved += Characters_OnValueRemoved;
         }
 
         /// <summary>
@@ -198,7 +200,7 @@ namespace CustomGuildChallenges.API
                 saveData.Challenges.Add(save);
             }
 
-            modHelper.WriteJsonFile(saveDataPath, saveData);
+            Helper.Data.WriteJsonFile(saveDataPath, saveData);
 
             // Remove custom location and add back the original location
             Game1.locations.Remove(customAdventureGuild);
@@ -214,7 +216,7 @@ namespace CustomGuildChallenges.API
         public virtual void InjectGuild(object sender, EventArgs e)
         {
             string saveDataPath = Path.Combine("saveData", Constants.SaveFolderName + ".json");
-            var saveData = modHelper.ReadJsonFile<SaveData>(saveDataPath) ?? new SaveData();
+            var saveData = Helper.Data.ReadJsonFile<SaveData>(saveDataPath) ?? new SaveData();
 
             foreach (var savedChallenge in saveData.Challenges)
             {
@@ -243,10 +245,11 @@ namespace CustomGuildChallenges.API
         private void Events_MonsterKilled(object sender, Monster e)
         {
             if (!(sender is GameLocation location)) return;
-            if (Game1.player.currentLocation.Name != location.Name) return;
+            else if (Game1.player.currentLocation.Name != location.Name) return;
 
             string monsterName = e.Name;
-            if (location.IsFarm && (Config.CountKillsOnFarm || monsterName == Monsters.WildernessGolem))
+
+            if (location.Name == FarmLocationName && (Config.CountKillsOnFarm || monsterName == Monsters.WildernessGolem))
             {
                 Game1.player.stats.monsterKilled(monsterName);
             }
@@ -257,11 +260,13 @@ namespace CustomGuildChallenges.API
                 Game1.player.stats.specificMonstersKilled[monsterName]--;
                 monsterName = mutantName;
             }
+            // else do nothing - game already handles the monster kill
 
-            //if (Config.DebugMonsterKills) Monitor.Log(monsterName + " killed for total of " + Game1.player.stats.getMonstersKilled(e.Name));
+            if (Config.DebugMonsterKills) Monitor.Log(monsterName + " killed for total of " + Game1.player.stats.getMonstersKilled(monsterName), LogLevel.Debug);
 
             NotifyIfChallengeComplete(monsterName);
         }
+
 
         /// <summary>
         ///     Display message to see Gil if the challenge just completed
