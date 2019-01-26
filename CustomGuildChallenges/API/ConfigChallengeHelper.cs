@@ -171,9 +171,14 @@ namespace CustomGuildChallenges.API
         {
             // Grub at -500 health means it transformed
             // This is a hacky way to detect transformation, but the alternative is reflection
-            if (value is Monster monster && monster.Health <= 0 && (!(value is Grub grub) || grub.Health != -500))
-            {                
-                MonsterKilled.Invoke(Game1.currentLocation, monster);
+            if(value is Monster monster)
+            {
+                if(monster.Health <= 0
+                    || ((value is Grub grub) && grub.Health != -500)
+                    || (monster.Name == Monsters.Mummy && monster.Health == monster.MaxHealth))
+                {
+                    MonsterKilled.Invoke(Game1.currentLocation, monster);
+                }
             }
         }
 
@@ -249,10 +254,12 @@ namespace CustomGuildChallenges.API
 
             string monsterName = e.Name;
 
+            // The game does not reward kills on the farm
             if (location.Name == FarmLocationName && (Config.CountKillsOnFarm || monsterName == Monsters.WildernessGolem))
             {
                 Game1.player.stats.monsterKilled(monsterName);
             }
+            // The game does not differentiate between bugs and mutant bugs
             else if (location.Name == BugLocationName)
             {
                 string mutantName = "Mutant " + monsterName;
@@ -260,6 +267,11 @@ namespace CustomGuildChallenges.API
                 Game1.player.stats.specificMonstersKilled[monsterName]--;
                 monsterName = mutantName;
             }
+            // The game does not give mummy kills to farmhands
+            else if (e.Name == Monsters.Mummy && Game1.IsClient)
+            {
+                Game1.player.stats.monsterKilled(Monsters.Mummy);
+            } 
             // else do nothing - game already handles the monster kill
 
             if (Config.DebugMonsterKills) Monitor.Log(monsterName + " killed for total of " + Game1.player.stats.getMonstersKilled(monsterName), LogLevel.Debug);
