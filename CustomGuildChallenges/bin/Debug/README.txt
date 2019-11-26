@@ -1,162 +1,160 @@
-﻿namespace CustomGuildChallenges
-{
-    // Corresponds to ObjectFactory byte constants
-    // Hat, Ring, and Boot types added by this mod
-    // because they are created separately in the
-    // regular Adventure Guild
-    public enum ItemType
-    {
-        Object = 0,
-        BigCraftable = 1,
-        Weapon = 2,
-        SpecialItem = 3,
-        RegularObjectRecipe = 4,
-        BigCraftableRecipe = 5,
-        Hat = 6,
-        Ring = 7,
-        Boots = 8
-    }
+﻿
+----------------------------------------------------------------------------------
+Custom Adventure Guild Challenges
+----------------------------------------------------------------------------------
 
-    // Item Type 3
-    public enum SpecialItems
-    {
-        ClubCard = 2,
-        SpecialCharm = 3,
-        SkullKey = 4,
-        MagnifyingGlass = 5,
-        DarkTalisman = 6,
-        MagicInk = 7,
-        LargePack = 99
-    }
+QUICK START
 
-    // Item Type 7
-    public enum Rings
-    {
-        SmallGlowRing = 516,
-        GlowRing = 517,
-        SmallMagnetRing = 518,
-        MagnetRing = 519,
-        SlimeCharmerRing = 520,
-        VampireRing = 522,
-        SavageRing = 523,
-        YobaRing = 524,
-        SturdyRing = 525,
-        BurglarsRing = 526,
-        IridiumBand = 527,
-        JukeboxRing = 528,
-        AmethystRing = 529,
-        TopazRing = 530,
-        AquamarineRing = 531,
-        JadeRing = 532,
-        EmeraldRing = 533,
-        RubyRing = 534,
-        CrabshellRing = 810,
-        NapalmRing = 811
-    }
+The mod comes with custom challenges and rewards, no additional setup is required! The rest of the README is for those
+who want to customize the challenges and rewards and how to do so.
 
-    //Item type 8
-    public enum Boots
-    {
-        Sneakers = 504,
-        RubberBoots = 505,
-        LeatherBoots = 506,
-        WorkBoots = 507,
-        CombatBoots = 508,
-        TundraBoots = 509,
-        ThermalBoots = 510,
-        DarkBoots = 511,
-        FirewalkerBoots = 512,
-        GenieShoes = 513,
-        SpaceBoots = 514,
-        CowboyBoots = 515,
-        EmilysMagicBoots = 804,
-        LeprechaunShoes = 806
-    }
+To change back to vanilla challenges, change the following line in the config.json file:
 
-    //Item type 6
-    public enum Hats
-    {
-        CowboyHat = 0,
-        BowlerHat = 1,
-        TopHat = 2,
-        Sombrero = 3,
-        StrawHat = 4,
-        OfficialCap = 5,
-        BlueBonnet = 6,
-        PlumChapeau = 7,
-        SkeletonMask = 8,
-        GoblinMask = 9,
-        ChickenMask = 10,
-        Earmuffs = 11,
-        DelicateBow = 12,
-        Tropiclip = 13,
-        ButterflyBow = 14,
-        HuntersCap = 15,
-        TruckerHat = 16,
-        SailorsCap = 17,
-        GoodOlCap = 18,
-        Fedora = 19,
-        CoolCap = 20,
-        LuckyBow = 21,
-        PolkaBow = 22,
-        GnomesCap = 23,
-        EyePatch = 24,
-        SantaHat = 25,
-        Tiara = 26,
-        HardHat = 27,
-        Souwester = 28,
-        Daisy = 29,
-        WatermelonBand = 30,
-        MouseEars = 31,
-        CatEars = 32,
-        CowgalHat = 33,
-        CowpokeHat = 34,
-        ArchersCap = 35,
-        PandaHat = 36,
-        BlueCowboyHat = 37,
-        RedCowboyHat = 38,
-        ConeHat = 39,
-        LivingHat = 40,
-        EmilysMagicHat = 41,
-        MushroomCap = 42,
-        DinosaurHat = 43,
-        TotemMask = 44,
-        LogoCap = 45,
-        WearableDwarfHelm = 46,
-        FashionHat = 47,
-        PumpkinMask = 48,
-        HairBone = 49,
-        KnightsHelmet = 50,
-        SquiresHelmet = 51,
-        SpottedHeadscarf = 52,
-        Beanie = 53,
-        FloppyBeanie = 54,
-        FishingHat = 55,
-        BlobfishMask = 56,
-        PartyHat1 = 57,
-        PartyHat2 = 58,
-        PartyHat3 = 59,
-        ArcaneHat = 60,
-        ChefHat = 61,
-        PirateHat = 62,
-        FlatToppedHat = 63,
-        ElegantTurban = 64,
-        WhiteTurban = 65,
-        GarbageHat = 66,
-        GoldenMask = 67,
-        PropellerHat = 68,
-        BridalVeil = 69,
-        WitchHat = 70,
-        CopperPan = 71,
-        GreenTurban = 72,
-        MagicCowboyHat = 73,
-        MagicTurban = 74
-    }
+"CustomChallengesEnabled": true
 
-    //Item type 2
-    public enum Weapons
-    {
-        RustySword = 0,
+	- TO -
+
+"CustomChallengesEnabled": false
+
+Your save data will remain the same so if you switch back to custom challenges or play with the config file, you can pick up right where you left off!
+
+
+INTRODUCTION
+
+Thank you for downloading the mod! With a little work, you can customize your guild goals and rewards as you see fit!
+If you are unfamiliar with JSON files, check out a tutorial (google "JSON tutorial") before proceeding.
+
+You can always use the VanillaConfig.json file as a reference or backup in case something goes wrong. This file has the vanilla challenges
+in the mod's format.
+
+Known Issues:
+	- Non-vanilla challenges do not show the challenge complete message
+	- Steam Achievement is activated when vanilla challenges are complete even if vanilla challenges are removed from config
+
+To workaround these issues, leave the vanilla challenges in the config. You can still update their reward and display name,
+but the monster types and the kill count must remain the same.
+
+
+I. CONFIG FILE INTRODUCTION
+
+The config file is global, meaning all farms will share the same goals and rewards. The mod never writes back to this file,
+so any changes you make are never updated or deleted.
+
+"CustomChallengesEnabled"
+Set to false if you want to keep the vanilla challenges. You do not have to modify the rest of the config if this is set to false. The mod will ignore it.
+If you want to use the challenges listed in the config instead of the vanilla challenges, change 'false' to 'true' (without the single quotes).
+
+"CountKillsOnFarm"
+By default, kills on the farm do not count toward the challenge goals. This mod enables kills for Wilderness Golems on farms because that's the only place
+they show up. If you want all other monster kills to count toward the goals too, change 'false' to 'true' (without the single quotes).
+
+"DebugMonsterKills"
+Displays each monster kill in the SMAPI console with total kills for that monster. Disabled by default.
+
+"GilNoRewardDialogue"
+This is what Gil says first time you talk to him in the guild and he has no rewards for you. You can make him as nice or as mean as you want.
+
+"GilSleepingDialogue"
+This is what Gil says after the first time you talk to him. Normally he snores, but now you decide what he says.
+
+"GilSpecialGiftDialogue"
+This is what Gil says when you get a special reward (Stardrop or any special wallet item)
+
+"Challenges" - This is an array of challenges, meaning there are multiple challenges in this section.
+Here are the fields for a single challenge:
+
+	  "ChallengeName" - Display name of the challenge (eg. Slimes, Duggies, Bats, etc.)
+      "RequiredKillCount" - How many monsters you need to kill to claim the reward
+      "RewardType" - There are different types of rewards: Rings, Hats, Weapons, and even Recipes (see section III for available RewardTypes)
+      "RewardItemNumber" - Each item has an in-game number. Find that number in section III
+	  "MonsterNames" - These are the monsters that count toward the Required Kill Count. The Slimes challenge counts Green Slimes, Sludges (red slimes), and Frost Jellies toward the total.
+		See section II for monster names
+
+
+II. Monster Information
+
+The following values are valid for MonsterNames:
+
+		"Green Slime"
+		"Frost Jelly"
+		"Sludge"
+		"Big Slime"
+
+		"Bug"
+		"Grub"
+		"Fly"
+
+		"Skeleton"
+		"Skeleton Mage"
+		"Skeleton Warrior"
+        
+		"Bat"
+		"Frost Bat"
+		"Lava Bat"
+		"Iridium Bat"
+
+		"Rock Crab"
+		"Lava Crab"
+		"Iridium Crab"
+
+		"Shadow Guy"
+		"Shadow Brute"
+		"Shadow Shaman"
+
+		"Ghost"
+		"Carbon Ghost"
+
+		"Stone Golem"
+		"Wilderness Golem"
+
+		"Duggy"
+		"Dust Spirit"
+
+		"Mummy"
+		"Serpent"
+
+		"Metal Head"
+		"Squid Kid"
+
+		"Spiker"	NOTE: This is an unused monster
+		"Cat"		NOTE: This is an unused monster
+
+		"MutantGrub"	NOTE: This is added by the mod and is not part of the base game
+		"MutantFly"		NOTE: This is added by the mod and is not part of the base game
+
+Example: I want the Slimes challenge to include Green, Frost, and Red Slimes (a.k.a. Sludge), and Big Slimes.
+Result:
+	"MonsterNames": [
+			"Green Slime",
+			"Frost Jelly",
+			"Sludge",
+			"Big Slime"
+		  ]
+
+
+III. Reward Information
+
+Rewards are broken into two numbers: the Reward Item Type and the Reward Item Number. To create a reward, both these numbers
+must correspond to an in game item. Select a Reward Item Type using the below table and look up the Reward Item Number from
+the corresponding item table below.
+
+Example: I want the reward for Slimes challenge to be a Slime Charmer Ring.
+My Reward Item Type is 7 for Ring with my Reward Item Number being 520 for Slime Charmer Ring.
+
+Reward Item Types:
+		Regular = 0 - Regular items like common materials. Reward will only output a single stack
+			Note: You will have to manually research the item number as that is not included in this file
+        BigCraftable = 1 - kegs, bee hives, crystalariums, etc.
+        MeleeWeapon = 2 - Weapons
+		SpecialItems = 3 - Special Items that end up in the farmer's wallet
+        RegularObjectRecipe = 4 - Blueprints for items of item type 0. Use the same id to get the blueprint for it
+        BigCraftableRecipe = 5 - Blueprints for items of item type 1. Use the same id to get the blueprint for it
+        Hat = 6
+        Ring = 7
+		Boots = 8
+
+MeleeWeapons - 2:
+		RustySword = 0,
         SilverSaber = 1,
         DarkSword = 2,
         HolyBlade = 3,
@@ -208,13 +206,96 @@
         Rapier = 49,
         SteelFalchion = 50,
         BrokenTrident = 51,
-        TemperedBroadsword = 52,
-    }
+        TemperedBroadsword = 52
 
-    //Item type 1
-    public enum BigCraftables
-    {
-        HousePlant = 0,
+Special - 3:
+		ClubCard = 2,
+        SpecialCharm = 3,
+        SkullKey = 4,
+        MagnifyingGlass = 5,
+        DarkTalisman = 6,
+        MagicInk = 7,
+        LargePack = 99		//NOTE: I don't know exactly how this works. It does not seem to affect
+							//		the inventory size.
+
+Rings - 7:
+		SmallGlowRing = 516,
+        GlowRing = 517,
+        SmallMagnetRing = 518,
+        MagnetRing = 519,
+        SlimeCharmerRing = 520,
+        VampireRing = 522,
+        SavageRing = 523,
+        YobaRing = 524,
+        SturdyRing = 525,
+        BurglarsRing = 526,
+        IridiumBand = 527,
+        JukeboxRing = 528,
+        AmethystRing = 529,
+        TopazRing = 530,
+        AquamarineRing = 531,
+        JadeRing = 532,
+        EmeraldRing = 533,
+        RubyRing = 534
+
+Hats - 6:
+		CowboyHat = 0,
+        BowlerHat = 1,
+        TopHat = 2,
+        Sombrero = 3,
+        StrawHat = 4,
+        OfficialCap = 5,
+        BlueBonnet = 6,
+        PlumChapeau = 7,
+        SkeletonMask = 8,
+        GoblinMask = 9,
+        ChickenMask = 10,
+        Earmuffs = 11,
+        DelicateBow = 12,
+        Tropiclip = 13,
+        ButterflyBow = 14,
+        HuntersCap = 15,
+        TruckerHast = 16,
+        SailorsCap = 17,
+        GoodOlCap = 18,
+        Fedora = 19,
+        CoolCap = 20,
+        LuckyBow = 21,
+        PolkaBow = 22,
+        GnomesCap = 23,
+        EyePatch = 24,
+        SantaHat = 25,
+        Tiara = 26,
+        HardHat = 27,
+        Souwester = 28,
+        Daisy = 29,
+        WatermelonBand = 30,
+        MouseEars = 31,
+        CatEars = 32,
+        CowgalHat = 33,
+        CowpokeHat = 34,
+        ArchersCap = 35,
+        PandaHat = 36,
+        BlueCowboyHat = 37,
+        RedCowboyHat = 38,
+        ConeHat = 39
+
+Boots - 8:
+		Sneakers = 504,
+        RubberBoots = 505,
+        LeatherBoots = 506,
+        WorkBoots = 507,
+        CombatBoots = 508,
+        TundraBoots = 509,
+        ThermalBoots = 510,
+        DarkBoots = 511,
+        FirewalkerBoots = 512,
+        GenieShoes = 513,
+        SpaceBoots = 514,
+        CowboyBoots = 515
+
+BigCraftable - 1:
+        HousePlant1 = 0,
         HousePlant2 = 1,
         HousePlant3 = 2,
         HousePlant4 = 3,
@@ -233,11 +314,11 @@
         OilMaker = 19,
         RecyclingMachine = 20,
         Crystalarium = 21,
-        TablePieceL = 22,
-        TablePieceR = 23,
+        TablePieceLeft = 22,
+        TablePieceRight = 23,
         MayonnaiseMachine = 24,
         SeedMaker = 25,
-        WoodChair = 26,
+        WoodChair1 = 26,
         WoodChair2 = 27,
         SkeletonModel = 28,
         Obelisk = 29,
@@ -260,7 +341,7 @@
         SeasonalDecor = 48,
         StoneFrog = 52,
         StoneParrot = 53,
-        StoneOwl = 54,
+        StoneOwl1 = 54,
         StoneJunimo = 55,
         SlimeBall = 56,
         GardenPot = 62,
@@ -278,15 +359,15 @@
         Bongo = 75,
         DecorativeSpears = 76,
         Boulder = 78,
-        Door = 79,
+        Door1 = 79,
         Door2 = 80,
-        LockedDoor = 81,
+        LockedDoor1 = 81,
         LockedDoor2 = 82,
-        WickedStatue = 83,
+        WickedStatue1 = 83,
         WickedStatue2 = 84,
-        SlothSkeletonL = 85,
-        SlothSkeletonM = 86,
-        SlothSkeletonR = 87,
+        SlothSkeletonLeft = 85,
+        SlothSkeletonMiddle = 86,
+        SlothSkeletonRight = 87,
         StandingGeode = 88,
         ObsidianVase = 89,
         CrystalChair = 90,
@@ -300,17 +381,17 @@
         Tapper = 105,
         Camera = 106,
         PlushBunny = 107,
-        TuboFlowers = 108,
-        TuboFlowers2 = 109,
-        Rarecrow = 110,
+        TubOFlowers1 = 108,
+        TubOFlowers2 = 109,
+        Rarecrow1 = 110,
         DecorativePitcher = 111,
-        DriedSunflowers = 112,
+        DriedSunflowerSeeds = 112,
         Rarecrow2 = 113,
         CharcoalKiln = 114,
         StardewHeroTrophy = 116,
         SodaMachine = 117,
-        Barrel = 118,
-        Crate = 119,
+        Barrel1 = 118,
+        Crate1 = 119,
         Barrel2 = 120,
         Crate2 = 121,
         Barrel3 = 122,
@@ -326,7 +407,7 @@
         Rarecrow6 = 138,
         Rarecrow7 = 139,
         Rarecrow8 = 140,
-        PrairieKingArcadeSystem = 141,
+        PraireKingArcadeSystem = 141,
         WoodenBrazier = 143,
         StoneBrazier = 144,
         GoldBrazier = 145,
@@ -339,33 +420,24 @@
         WoodLamppost = 152,
         IronLamppost = 153,
         WormBin = 154,
-        HMTGF = 155,
+        HMTGF = 155, // Listed as ??HMTGF??
         SlimeIncubator = 156,
         SlimeEggPress = 158,
         JunimoKartArcadeSystem = 159,
         StatueOfPerfection = 160,
-        PinkyLemon = 161,
-        Foroguemon = 162,
+        PinkyLemon = 161, // Listed as ??PinkyLemon??
+        Foroguemon = 162, // Listed as ??Foroguemon??
         Cask = 163,
         SolidGoldLewis = 164,
         AutoGrabber = 165,
-        DeluxeScarecrow = 167,
-        SeasonalPlant = 184,
+        SeasonalPlant1 = 184,
         SeasonalPlant2 = 188,
         SeasonalPlant3 = 192,
         SeasonalPlant4 = 196,
         SeasonalPlant5 = 200,
-        SeasonalPlant6 = 204,
-        Workbench = 208,
-        MiniJukebox = 209,
-        WoodChipper = 211,
-        MiniFridge = 216,
-        CursedPKArcadeSystem = 219
-    }
+        SeasonalPlant6 = 204
 
-    //Item type 0
-    public enum Objects
-    {
+Objects - 0:
         Weeds = 0,
         Stone = 2,
         Stone2 = 4,
@@ -381,7 +453,6 @@
         Amethyst = 66,
         Topaz = 68,
         Jade = 70,
-        TrimmedLuckyPurpleShorts = 71,
         Diamond = 72,
         PrismaticShard = 74,
         Stone3 = 75,
@@ -481,7 +552,6 @@
         LargeMilk = 186,
         GreenBean = 188,
         Cauliflower = 190,
-        OrnateNecklace = 191,
         Potato = 192,
         FriedEgg = 194,
         Omelet = 195,
@@ -538,16 +608,13 @@
         Oil = 247,
         Garlic = 248,
         Kale = 250,
-        TeaSapling = 251,
         Rhubarb = 252,
-        TripleShotEspresso = 253,
         Melon = 254,
         Tomato = 256,
         Morel = 257,
         Blueberry = 258,
         FiddleheadFern = 259,
         HotPepper = 260,
-        WarpTotemDesert = 261,
         Wheat = 262,
         Radish = 264,
         RedCabbage = 266,
@@ -555,11 +622,8 @@
         Corn = 270,
         Eggplant = 272,
         Artichoke = 274,
-        ArtifactTrove = 275,
         Pumpkin = 276,
-        WiltedBouquet = 277,
         BokChoy = 278,
-        MagicRockCandy = 279,
         Yam = 280,
         Chanterelle = 281,
         Cranberries = 282,
@@ -569,7 +633,6 @@
         Bomb = 287,
         MegaBomb = 288,
         Stone6 = 290,
-        BrickFloor = 293,
         Twig = 294,
         Twig2 = 295,
         Salmonberry = 296,
@@ -688,9 +751,7 @@
         ExplosiveAmmo = 441,
         DuckEgg = 442,
         DuckFeather = 444,
-        Cavair = 445,
         RabbitsFoot = 446,
-        AgedRoe = 447,
         StoneBase = 449,
         Stone9 = 450,
         Weeds11 = 452,
@@ -825,7 +886,6 @@
         BlackberryCobbler = 611,
         CranberryCandy = 612,
         Apple = 613,
-        GreenTea = 614,
         Bruschetta = 618,
         QualitySprinkler = 621,
         CherrySapling = 628,
@@ -897,7 +957,6 @@
         LobsterBisque = 730,
         MapleBar = 731,
         CrabCakes = 732,
-        ShrimpCocktail = 733,
         Woodskip = 734,
         StrawberrySeeds = 745,
         JackOLantern = 746,
@@ -938,13 +997,9 @@
         Blobfish = 800,
         WeddingRing = 801,
         CactusSeeds = 802,
-        IridiumMilk = 803,
-        TreeFertilizer = 805,
-        DinosaurMayonnaise = 807,
-        VoidGhostPendant = 808,
-        MovieTicket = 809,
-        Roe = 812,
-        SquidInk = 814,
-        TeaLeaves = 815
- }
-}
+        IridiumMilk = 803
+
+IV. Final
+
+If you have issues or would like help creating a custom list, reach out to me on Nexus Mods (DefenTheNation) and I
+would be more than happy to help!

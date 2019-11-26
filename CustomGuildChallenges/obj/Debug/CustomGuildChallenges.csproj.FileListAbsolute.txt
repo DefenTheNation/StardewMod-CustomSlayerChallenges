@@ -1,0 +1,8 @@
+C:\Users\Courtney\Documents\Stardew\Modding\Mod Tools\StardewMod-CustomSlayerChallenges-master\CustomGuildChallenges\bin\Debug\README.txt
+C:\Users\Courtney\Documents\Stardew\Modding\Mod Tools\StardewMod-CustomSlayerChallenges-master\CustomGuildChallenges\bin\Debug\config.json
+C:\Users\Courtney\Documents\Stardew\Modding\Mod Tools\StardewMod-CustomSlayerChallenges-master\CustomGuildChallenges\bin\Debug\CustomGuildChallenges.dll
+C:\Users\Courtney\Documents\Stardew\Modding\Mod Tools\StardewMod-CustomSlayerChallenges-master\CustomGuildChallenges\bin\Debug\CustomGuildChallenges.pdb
+C:\Users\Courtney\Documents\Stardew\Modding\Mod Tools\StardewMod-CustomSlayerChallenges-master\CustomGuildChallenges\obj\Debug\CustomGuildChallenges.csprojAssemblyReference.cache
+C:\Users\Courtney\Documents\Stardew\Modding\Mod Tools\StardewMod-CustomSlayerChallenges-master\CustomGuildChallenges\obj\Debug\CustomGuildChallenges.csproj.CoreCompileInputs.cache
+C:\Users\Courtney\Documents\Stardew\Modding\Mod Tools\StardewMod-CustomSlayerChallenges-master\CustomGuildChallenges\obj\Debug\CustomGuildChallenges.dll
+C:\Users\Courtney\Documents\Stardew\Modding\Mod Tools\StardewMod-CustomSlayerChallenges-master\CustomGuildChallenges\obj\Debug\CustomGuildChallenges.pdb
